@@ -7,6 +7,9 @@ import Games from "./pages/[dashboard]/Games";
 import Earphones from "./pages/[dashboard]/Earphones";
 import Keyboards from "./pages/[dashboard]/Keyboards";
 import Headsets from "./pages/[dashboard]/Headsets";
+import Mousepads from "./pages/[dashboard]/Mousepads";
+import Monitors from "./pages/[dashboard]/Monitors";
+import Mice from "./pages/[dashboard]/Mice";
 const App = () => {
   const [session, setSession] = useState(null);
   useEffect(() => {
@@ -43,15 +46,15 @@ const App = () => {
         />
         <Route
           path={"/dashboard/mice"}
-          element={<Earphones session={session} setSession={setSession} />}
+          element={<Mice session={session} setSession={setSession} />}
         />
         <Route
           path={"/dashboard/mousepads"}
-          element={<Earphones session={session} setSession={setSession} />}
+          element={<Mousepads session={session} setSession={setSession} />}
         />
         <Route
           path={"/dashboard/monitors"}
-          element={<Earphones session={session} setSession={setSession} />}
+          element={<Monitors session={session} setSession={setSession} />}
         />
         <Route
           path={"/dashboard/keyboards"}

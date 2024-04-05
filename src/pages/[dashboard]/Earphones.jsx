@@ -1,12 +1,10 @@
-import { Button, Flex, Table, Text, TextField } from "@radix-ui/themes";
+import { Button, Table } from "@radix-ui/themes";
 import * as Dialog from "@radix-ui/react-dialog";
 import Dashboard from "../../components/Dashboard";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
 import { supabase } from "../../db/supabaseClient";
-import { CircleX, CircleXIcon } from "lucide-react";
-import GameRow from "../../components/GameRow";
+import { CircleXIcon } from "lucide-react";
 import EarphoneRow from "../../components/EarphoneRow";
 
 const Earphones = () => {

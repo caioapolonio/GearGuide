@@ -1,5 +1,5 @@
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { BarChart4, List, LogOut, UserRound } from "lucide-react";
+import { BarChart4, LogOut, UserRound } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../db/supabaseClient";
 import LoginBtn from "./LoginBtn";
@@ -7,11 +7,14 @@ import SignUpBtn from "./SignUpBtn";
 import { useEffect, useState } from "react";
 
 const Navbar = ({ session, setSession }) => {
-  const [user, setUser] = useState([]); // Add this line
+  const [user, setUser] = useState([]);
   let navigate = useNavigate();
 
   useEffect(() => {
-    handleUser();
+    if (session) {
+      handleUser();
+      console.log("user logged in");
+    }
   }, [session]);
 
   const handleUser = async () => {
@@ -25,7 +28,7 @@ const Navbar = ({ session, setSession }) => {
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
-      console.log("handleLogout", error);
+      console.log("ERRO AO FAZER SIGNOUT", error);
       return;
     }
     navigate("/");

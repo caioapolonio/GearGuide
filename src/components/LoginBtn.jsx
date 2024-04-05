@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "../db/supabaseClient";
 
 const LoginBtn = ({ session, setSession }) => {
-  console.log("SESSION ON LOGIN PAGE", session);
   const [errorMessage, setErrorMessage] = useState("");
   const {
     register,
@@ -21,13 +20,12 @@ const LoginBtn = ({ session, setSession }) => {
       email,
       password,
     });
-    console.log("DATA", data);
     if (error) {
       console.log("ERROR", error);
       setErrorMessage(error.message);
     } else {
+      console.log("DATA", data);
       setSession(data);
-      navigate("/home");
       console.log("EVENTO", e);
     }
   };
@@ -101,10 +99,6 @@ const LoginBtn = ({ session, setSession }) => {
               >
                 Esqueci minha senha
               </a>
-
-              <button className="w-fit text-white underline hover:text-neutral-300">
-                Criar conta
-              </button>
             </div>
             <button
               className="rounded-md bg-purple-700 p-2 text-white shadow-xl"
