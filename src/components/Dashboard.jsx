@@ -5,7 +5,7 @@ const Dashboard = ({ children }) => {
   const activelink = inactiveLink + " bg-white text-[#1F1C2B] rounded-l-md";
 
   let location = useLocation();
-  console.log(location);
+
   return (
     <div className="flex min-h-screen bg-[#1F1C2B]">
       <aside className="p-4 pr-0 text-white transition-all">

@@ -1,17 +1,16 @@
-import { Button, Flex, Table, Text, TextField } from "@radix-ui/themes";
+import { Button, Table } from "@radix-ui/themes";
 import * as Dialog from "@radix-ui/react-dialog";
 import Dashboard from "../../components/Dashboard";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { supabase } from "../../db/supabaseClient";
 import { CircleXIcon } from "lucide-react";
-import EarphoneRow from "../../components/EarphoneRow";
-import KeyboardRow from "../../components/KeyboardRow";
+import MouseRow from "../../components/MouseRow";
 
-const Keyboards = () => {
+const Mice = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const [keyboardsData, setKeyboardsData] = useState([]);
+  const [miceData, setMiceData] = useState([]);
 
   const handleInputChange = () => {
     setSuccessMessage("");
@@ -27,36 +26,36 @@ const Keyboards = () => {
   const onSubmit = async (e) => {
     const { name, image_url } = e;
     const { data, error } = await supabase
-      .from("keyboards")
+      .from("mice")
       .insert({ name: name, image_url: image_url });
 
     if (error) {
       console.log("ERROR", error);
       setErrorMessage(error.message);
     } else {
-      setSuccessMessage("Keyboard added successfully!");
+      setSuccessMessage("Mouse added successfully!");
       reset();
-      fetchKeyboardsData();
+      fetchMiceData();
       console.log("EVENTO", e);
       console.log("DATA", data);
     }
   };
 
-  async function fetchKeyboardsData() {
+  async function fetchMiceData() {
     try {
-      const { data, error } = await supabase.from("keyboards").select("*");
+      const { data, error } = await supabase.from("mice").select("*");
       if (error) {
         throw error;
       }
       console.log(data);
-      setKeyboardsData(data);
+      setMiceData(data);
     } catch (error) {
       console.error("Erro ao recuperar dados:", error.message);
     }
   }
 
   useEffect(() => {
-    fetchKeyboardsData();
+    fetchMiceData();
   }, []);
 
   return (
@@ -64,14 +63,14 @@ const Keyboards = () => {
       <Dialog.Root>
         <div className="flex justify-end pb-4">
           <Dialog.Trigger asChild>
-            <Button variant="outline">Add Keyboard</Button>
+            <Button variant="outline">Add Mouse</Button>
           </Dialog.Trigger>
         </div>
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0" />
           <Dialog.Content className="data-[state=open]:animate-contentShow fixed left-[50%] top-[50%] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-zinc-800 p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
             <Dialog.Title className="flex items-center justify-center text-2xl  font-medium text-white">
-              Add Keyboard
+              Add Mouse
             </Dialog.Title>
             <form
               onSubmit={handleSubmit(onSubmit)}
@@ -86,7 +85,7 @@ const Keyboards = () => {
                   {...register("name", {
                     required: {
                       value: true,
-                      message: "Preencha o campo de nome do jogo",
+                      message: "Preencha o campo de nome",
                     },
                     validate: (value) =>
                       value.trim() !== "" || "Campo obrigatório",
@@ -130,7 +129,7 @@ const Keyboards = () => {
               {errorMessage && (
                 <div className="text-red-600">{errorMessage}</div>
               )}
-              {successMessage && ( // Conditionally render success message
+              {successMessage && (
                 <p className="text-green-500">{successMessage}</p>
               )}
             </form>
@@ -138,7 +137,7 @@ const Keyboards = () => {
             <div className="mt-[25px] flex justify-end"></div>
             <Dialog.Close asChild>
               <button
-                className="absolute right-[10px] top-[10px] inline-flex appearance-none items-center justify-center"
+                className="absolute right-[10px] top-[10px] inline-flex appearance-none items-center justify-center "
                 aria-label="Close"
               >
                 <CircleXIcon color="white" size={33} />
@@ -157,17 +156,17 @@ const Keyboards = () => {
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {keyboardsData.map((keyboard) => (
-            <KeyboardRow
-              key={keyboard.id}
-              keyboard={keyboard}
-              keyboardsData={keyboardsData}
-              setKeyboardsData={setKeyboardsData}
+          {miceData.map((mouse) => (
+            <MouseRow
+              key={mouse.mouse_id}
+              mouse={mouse}
+              miceData={miceData}
+              setMiceData={setMiceData}
               errorMessage={errorMessage}
               setErrorMessage={setErrorMessage}
               successMessage={successMessage}
               setSuccessMessage={setSuccessMessage}
-              fetchKeyboardsData={fetchKeyboardsData}
+              fetchMiceData={fetchMiceData}
             />
           ))}
         </Table.Body>
@@ -176,4 +175,4 @@ const Keyboards = () => {
   );
 };
 
-export default Keyboards;
+export default Mice;

@@ -30,7 +30,7 @@ const GameRow = ({
         const { data, error } = await supabase
           .from("games")
           .delete()
-          .eq("id", gameId);
+          .eq("game_id", gameId);
         if (error) {
           console.error("Error deleting game:", error.message);
         } else {
@@ -44,11 +44,11 @@ const GameRow = ({
   };
 
   const onUpdateGame = async (e) => {
-    const { id, name, image_url } = e;
+    const { game_id, name, image_url } = e;
     const { data, error } = await supabase
       .from("games")
       .update({ name: name, image_url: image_url })
-      .eq("id", id);
+      .eq("game_id", game_id);
     if (error) {
       console.log("ERROR", error);
       setErrorMessage(error.message);
@@ -62,7 +62,7 @@ const GameRow = ({
 
   return (
     <>
-      <Table.Row key={game.id} align={"center"}>
+      <Table.Row key={game.game_id} align={"center"}>
         <Table.RowHeaderCell>{game.name}</Table.RowHeaderCell>
         <Table.Cell>{game.image_url}</Table.Cell>
         <Table.Cell>
@@ -70,7 +70,7 @@ const GameRow = ({
         </Table.Cell>
 
         <Table.Cell>
-          <Button onClick={() => handleDeleteGame(game.id)}>Delete</Button>
+          <Button onClick={() => handleDeleteGame(game.game_id)}>Delete</Button>
         </Table.Cell>
       </Table.Row>
       {editing && (
@@ -92,9 +92,9 @@ const GameRow = ({
                       className="rounded-md border border-[#171524] bg-neutral-200 p-2 outline-none"
                       name="id"
                       type="text"
-                      defaultValue={game.id}
+                      defaultValue={game.game_id}
                       readOnly
-                      {...register("id", {
+                      {...register("game_id", {
                         required: {
                           value: true,
                           message: "O campo de id deve ser preenchido",

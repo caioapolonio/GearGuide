@@ -32,7 +32,7 @@ const KeyboardRow = ({
         const { data, error } = await supabase
           .from("keyboards")
           .delete()
-          .eq("id", keyboardId);
+          .eq("keyboard_id", keyboardId);
         if (error) {
           console.error("Error deleting keyboard:", error.message);
         } else {
@@ -46,11 +46,11 @@ const KeyboardRow = ({
   };
 
   const onUpdateKeyboard = async (e) => {
-    const { id, name, image_url } = e;
+    const { keyboard_id, name, image_url } = e;
     const { data, error } = await supabase
       .from("keyboards")
       .update({ name: name, image_url: image_url })
-      .eq("id", id);
+      .eq("keyboard_id", keyboard_id);
     if (error) {
       console.log("ERROR", error);
       setErrorMessage(error.message);
@@ -63,7 +63,7 @@ const KeyboardRow = ({
   };
   return (
     <>
-      <Table.Row key={keyboard.id} align={"center"}>
+      <Table.Row key={keyboard.keyboard_id} align={"center"}>
         <Table.RowHeaderCell>{keyboard.name}</Table.RowHeaderCell>
         <Table.Cell>{keyboard.image_url}</Table.Cell>
         <Table.Cell>
@@ -71,7 +71,7 @@ const KeyboardRow = ({
         </Table.Cell>
 
         <Table.Cell>
-          <Button onClick={() => handleDeleteKeyboard(keyboard.id)}>
+          <Button onClick={() => handleDeleteKeyboard(keyboard.keyboard_id)}>
             Delete
           </Button>
         </Table.Cell>
@@ -95,9 +95,9 @@ const KeyboardRow = ({
                       className="rounded-md border border-[#171524] bg-neutral-200 p-2 outline-none"
                       name="id"
                       type="text"
-                      defaultValue={keyboard.id}
+                      defaultValue={keyboard.keyboard_id}
                       readOnly
-                      {...register("id", {
+                      {...register("keyboard_id", {
                         required: {
                           value: true,
                           message: "O campo de id deve ser preenchido",

@@ -32,7 +32,7 @@ const HeadsetRow = ({
         const { data, error } = await supabase
           .from("headsets")
           .delete()
-          .eq("id", headsetId);
+          .eq("headset_id", headsetId);
         if (error) {
           console.error("Error deleting headset:", error.message);
         } else {
@@ -46,11 +46,11 @@ const HeadsetRow = ({
   };
 
   const onUpdateHeadset = async (e) => {
-    const { id, name, image_url } = e;
+    const { headset_id, name, image_url } = e;
     const { data, error } = await supabase
       .from("headsets")
       .update({ name: name, image_url: image_url })
-      .eq("id", id);
+      .eq("headset_id", headset_id);
     if (error) {
       console.log("ERROR", error);
       setErrorMessage(error.message);
@@ -64,7 +64,7 @@ const HeadsetRow = ({
 
   return (
     <>
-      <Table.Row key={headset.id} align={"center"}>
+      <Table.Row key={headset.headset_id} align={"center"}>
         <Table.RowHeaderCell>{headset.name}</Table.RowHeaderCell>
         <Table.Cell>{headset.image_url}</Table.Cell>
         <Table.Cell>
@@ -72,7 +72,7 @@ const HeadsetRow = ({
         </Table.Cell>
 
         <Table.Cell>
-          <Button onClick={() => handleDeleteHeadset(headset.id)}>
+          <Button onClick={() => handleDeleteHeadset(headset.headset_id)}>
             Delete
           </Button>
         </Table.Cell>
@@ -96,9 +96,9 @@ const HeadsetRow = ({
                       className="rounded-md border border-[#171524] bg-neutral-200 p-2 outline-none"
                       name="id"
                       type="text"
-                      defaultValue={headset.id}
+                      defaultValue={headset.headset_id}
                       readOnly
-                      {...register("id", {
+                      {...register("headset_id", {
                         required: {
                           value: true,
                           message: "O campo de id deve ser preenchido",

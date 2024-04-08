@@ -5,12 +5,12 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { supabase } from "../../db/supabaseClient";
 import { CircleXIcon } from "lucide-react";
-import PlayerRow from "../../components/PlayerRow";
+import MonitorRow from "../../components/MonitorRow";
 
-const Players = () => {
+const Monitors = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const [playersData, setPlayersData] = useState([]);
+  const [monitorsData, setMonitorsData] = useState([]);
 
   const handleInputChange = () => {
     setSuccessMessage("");
@@ -26,36 +26,36 @@ const Players = () => {
   const onSubmit = async (e) => {
     const { name, image_url } = e;
     const { data, error } = await supabase
-      .from("players")
+      .from("monitors")
       .insert({ name: name, image_url: image_url });
 
     if (error) {
       console.log("ERROR", error);
       setErrorMessage(error.message);
     } else {
-      setSuccessMessage("Player added successfully!");
+      setSuccessMessage("Monitor added successfully!");
       reset();
-      fetchPlayersData();
+      fetchMonitorsData();
       console.log("EVENTO", e);
       console.log("DATA", data);
     }
   };
 
-  async function fetchPlayersData() {
+  async function fetchMonitorsData() {
     try {
-      const { data, error } = await supabase.from("players").select("*");
+      const { data, error } = await supabase.from("monitors").select("*");
       if (error) {
         throw error;
       }
       console.log(data);
-      setPlayersData(data);
+      setMonitorsData(data);
     } catch (error) {
       console.error("Erro ao recuperar dados:", error.message);
     }
   }
 
   useEffect(() => {
-    fetchPlayersData();
+    fetchMonitorsData();
   }, []);
 
   return (
@@ -63,14 +63,14 @@ const Players = () => {
       <Dialog.Root>
         <div className="flex justify-end pb-4">
           <Dialog.Trigger asChild>
-            <Button variant="outline">Add Player</Button>
+            <Button variant="outline">Add Monitor</Button>
           </Dialog.Trigger>
         </div>
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0" />
           <Dialog.Content className="data-[state=open]:animate-contentShow fixed left-[50%] top-[50%] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-zinc-800 p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
             <Dialog.Title className="flex items-center justify-center text-2xl  font-medium text-white">
-              Add Player
+              Add Monitors
             </Dialog.Title>
             <form
               onSubmit={handleSubmit(onSubmit)}
@@ -156,17 +156,17 @@ const Players = () => {
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {playersData.map((player) => (
-            <PlayerRow
-              key={player.id}
-              player={player}
-              playersData={playersData}
-              setPlayersData={setPlayersData}
+          {monitorsData.map((monitor) => (
+            <MonitorRow
+              key={monitor.monitor_id}
+              monitor={monitor}
+              monitorsData={monitorsData}
+              setMonitorsData={setMonitorsData}
               errorMessage={errorMessage}
               setErrorMessage={setErrorMessage}
               successMessage={successMessage}
               setSuccessMessage={setSuccessMessage}
-              fetchPlayersData={fetchPlayersData}
+              fetchMonitorsData={fetchMonitorsData}
             />
           ))}
         </Table.Body>
@@ -175,4 +175,4 @@ const Players = () => {
   );
 };
 
-export default Players;
+export default Monitors;

@@ -1,19 +1,16 @@
-import { Button, Flex, Table, Text, TextField } from "@radix-ui/themes";
+import { Button, Table } from "@radix-ui/themes";
 import * as Dialog from "@radix-ui/react-dialog";
 import Dashboard from "../../components/Dashboard";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
 import { supabase } from "../../db/supabaseClient";
-import { CircleX, CircleXIcon } from "lucide-react";
-import GameRow from "../../components/GameRow";
+import { CircleXIcon } from "lucide-react";
 import EarphoneRow from "../../components/EarphoneRow";
-import HeadsetRow from "../../components/HeadsetRow";
 
-const Headsets = () => {
+const Earphones = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const [headsetsData, setHeadsetsData] = useState([]);
+  const [earphonesData, setEarphonesData] = useState([]);
 
   const handleInputChange = () => {
     setSuccessMessage("");
@@ -29,7 +26,7 @@ const Headsets = () => {
   const onSubmit = async (e) => {
     const { name, image_url } = e;
     const { data, error } = await supabase
-      .from("headsets")
+      .from("earphones")
       .insert({ name: name, image_url: image_url });
 
     if (error) {
@@ -38,27 +35,27 @@ const Headsets = () => {
     } else {
       setSuccessMessage("Earphone added successfully!");
       reset();
-      fetchHeadsetsData();
+      fetchEarphonesData();
       console.log("EVENTO", e);
       console.log("DATA", data);
     }
   };
 
-  async function fetchHeadsetsData() {
+  async function fetchEarphonesData() {
     try {
-      const { data, error } = await supabase.from("headsets").select("*");
+      const { data, error } = await supabase.from("earphones").select("*");
       if (error) {
         throw error;
       }
       console.log(data);
-      setHeadsetsData(data);
+      setEarphonesData(data);
     } catch (error) {
       console.error("Erro ao recuperar dados:", error.message);
     }
   }
 
   useEffect(() => {
-    fetchHeadsetsData();
+    fetchEarphonesData();
   }, []);
 
   return (
@@ -66,14 +63,14 @@ const Headsets = () => {
       <Dialog.Root>
         <div className="flex justify-end pb-4">
           <Dialog.Trigger asChild>
-            <Button variant="outline">Add Headset</Button>
+            <Button variant="outline">Add Earphone</Button>
           </Dialog.Trigger>
         </div>
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0" />
           <Dialog.Content className="data-[state=open]:animate-contentShow fixed left-[50%] top-[50%] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-zinc-800 p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
             <Dialog.Title className="flex items-center justify-center text-2xl  font-medium text-white">
-              Add Headset
+              Add Earphone
             </Dialog.Title>
             <form
               onSubmit={handleSubmit(onSubmit)}
@@ -159,17 +156,17 @@ const Headsets = () => {
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {headsetsData.map((headset) => (
-            <HeadsetRow
-              key={headset.id}
-              headset={headset}
-              headsetsData={headsetsData}
-              setHeadsetsData={setHeadsetsData}
+          {earphonesData.map((earphone) => (
+            <EarphoneRow
+              key={earphone.earphone_id}
+              earphone={earphone}
+              earphonesData={earphonesData}
+              setEarphonesData={setEarphonesData}
               errorMessage={errorMessage}
               setErrorMessage={setErrorMessage}
               successMessage={successMessage}
               setSuccessMessage={setSuccessMessage}
-              fetchHeadsetsData={fetchHeadsetsData}
+              fetchEarphonesData={fetchEarphonesData}
             />
           ))}
         </Table.Body>
@@ -178,4 +175,4 @@ const Headsets = () => {
   );
 };
 
-export default Headsets;
+export default Earphones;

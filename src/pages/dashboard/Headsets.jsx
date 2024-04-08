@@ -6,12 +6,14 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../../db/supabaseClient";
 import { CircleX, CircleXIcon } from "lucide-react";
-import MousepadRow from "../../components/MousepadRow";
+import GameRow from "../../components/GameRow";
+import EarphoneRow from "../../components/EarphoneRow";
+import HeadsetRow from "../../components/HeadsetRow";
 
-const Mousepads = () => {
+const Headsets = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const [mousepadsData, setMousepadsData] = useState([]);
+  const [headsetsData, setHeadsetsData] = useState([]);
 
   const handleInputChange = () => {
     setSuccessMessage("");
@@ -27,36 +29,36 @@ const Mousepads = () => {
   const onSubmit = async (e) => {
     const { name, image_url } = e;
     const { data, error } = await supabase
-      .from("mousepads")
+      .from("headsets")
       .insert({ name: name, image_url: image_url });
 
     if (error) {
       console.log("ERROR", error);
       setErrorMessage(error.message);
     } else {
-      setSuccessMessage("Mousepad added successfully!");
+      setSuccessMessage("Earphone added successfully!");
       reset();
-      fetchMousepadsData();
+      fetchHeadsetsData();
       console.log("EVENTO", e);
       console.log("DATA", data);
     }
   };
 
-  async function fetchMousepadsData() {
+  async function fetchHeadsetsData() {
     try {
-      const { data, error } = await supabase.from("mousepads").select("*");
+      const { data, error } = await supabase.from("headsets").select("*");
       if (error) {
         throw error;
       }
       console.log(data);
-      setMousepadsData(data);
+      setHeadsetsData(data);
     } catch (error) {
       console.error("Erro ao recuperar dados:", error.message);
     }
   }
 
   useEffect(() => {
-    fetchMousepadsData();
+    fetchHeadsetsData();
   }, []);
 
   return (
@@ -64,14 +66,14 @@ const Mousepads = () => {
       <Dialog.Root>
         <div className="flex justify-end pb-4">
           <Dialog.Trigger asChild>
-            <Button variant="outline">Add Mousepad</Button>
+            <Button variant="outline">Add Headset</Button>
           </Dialog.Trigger>
         </div>
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0" />
           <Dialog.Content className="data-[state=open]:animate-contentShow fixed left-[50%] top-[50%] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-zinc-800 p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
             <Dialog.Title className="flex items-center justify-center text-2xl  font-medium text-white">
-              Add Mousepad
+              Add Headset
             </Dialog.Title>
             <form
               onSubmit={handleSubmit(onSubmit)}
@@ -157,17 +159,17 @@ const Mousepads = () => {
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {mousepadsData.map((mousepad) => (
-            <MousepadRow
-              key={mousepad.id}
-              mousepad={mousepad}
-              mousepadsData={mousepadsData}
-              setMousepadsData={setMousepadsData}
+          {headsetsData.map((headset) => (
+            <HeadsetRow
+              key={headset.headset_id}
+              headset={headset}
+              headsetsData={headsetsData}
+              setHeadsetsData={setHeadsetsData}
               errorMessage={errorMessage}
               setErrorMessage={setErrorMessage}
               successMessage={successMessage}
               setSuccessMessage={setSuccessMessage}
-              fetchMousepadsData={fetchMousepadsData}
+              fetchHeadsetsData={fetchHeadsetsData}
             />
           ))}
         </Table.Body>
@@ -176,4 +178,4 @@ const Mousepads = () => {
   );
 };
 
-export default Mousepads;
+export default Headsets;

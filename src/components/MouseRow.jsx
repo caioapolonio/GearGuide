@@ -32,7 +32,7 @@ const MouseRow = ({
         const { data, error } = await supabase
           .from("mice")
           .delete()
-          .eq("id", mouseId);
+          .eq("mouse_id", mouseId);
         if (error) {
           console.error("Error deleting mouse:", error.message);
         } else {
@@ -46,11 +46,11 @@ const MouseRow = ({
   };
 
   const onUpdateMouse = async (e) => {
-    const { id, name, image_url } = e;
+    const { mouse_id, name, image_url } = e;
     const { data, error } = await supabase
       .from("mice")
       .update({ name: name, image_url: image_url })
-      .eq("id", id);
+      .eq("mouse_id", mouse_id);
     if (error) {
       console.log("ERROR", error);
       setErrorMessage(error.message);
@@ -64,7 +64,7 @@ const MouseRow = ({
 
   return (
     <>
-      <Table.Row key={mouse.id} align={"center"}>
+      <Table.Row key={mouse.mouse_id} align={"center"}>
         <Table.RowHeaderCell>{mouse.name}</Table.RowHeaderCell>
         <Table.Cell>{mouse.image_url}</Table.Cell>
         <Table.Cell>
@@ -72,7 +72,9 @@ const MouseRow = ({
         </Table.Cell>
 
         <Table.Cell>
-          <Button onClick={() => handleDeleteMouse(mouse.id)}>Delete</Button>
+          <Button onClick={() => handleDeleteMouse(mouse.mouse_id)}>
+            Delete
+          </Button>
         </Table.Cell>
       </Table.Row>
       {editing && (
@@ -94,9 +96,9 @@ const MouseRow = ({
                       className="rounded-md border border-[#171524] bg-neutral-200 p-2 outline-none"
                       name="id"
                       type="text"
-                      defaultValue={mouse.id}
+                      defaultValue={mouse.mouse_id}
                       readOnly
-                      {...register("id", {
+                      {...register("mouse_id", {
                         required: {
                           value: true,
                           message: "O campo de id deve ser preenchido",

@@ -32,7 +32,7 @@ const MousepadRow = ({
         const { data, error } = await supabase
           .from("mousepads")
           .delete()
-          .eq("id", mousepadId);
+          .eq("mousepad_id", mousepadId);
         if (error) {
           console.error("Error deleting mousepad:", error.message);
         } else {
@@ -46,11 +46,11 @@ const MousepadRow = ({
   };
 
   const onUpdateMousepad = async (e) => {
-    const { id, name, image_url } = e;
+    const { mousepad_id, name, image_url } = e;
     const { data, error } = await supabase
       .from("mousepads")
       .update({ name: name, image_url: image_url })
-      .eq("id", id);
+      .eq("mousepad_id", mousepad_id);
     if (error) {
       console.log("ERROR", error);
       setErrorMessage(error.message);
@@ -64,7 +64,7 @@ const MousepadRow = ({
 
   return (
     <>
-      <Table.Row key={mousepad.id} align={"center"}>
+      <Table.Row key={mousepad.mousepad_id} align={"center"}>
         <Table.RowHeaderCell>{mousepad.name}</Table.RowHeaderCell>
         <Table.Cell>{mousepad.image_url}</Table.Cell>
         <Table.Cell>
@@ -72,7 +72,7 @@ const MousepadRow = ({
         </Table.Cell>
 
         <Table.Cell>
-          <Button onClick={() => handleDeleteMousepad(mousepad.id)}>
+          <Button onClick={() => handleDeleteMousepad(mousepad.mousepad_id)}>
             Delete
           </Button>
         </Table.Cell>
@@ -96,9 +96,9 @@ const MousepadRow = ({
                       className="rounded-md border border-[#171524] bg-neutral-200 p-2 outline-none"
                       name="id"
                       type="text"
-                      defaultValue={mousepad.id}
+                      defaultValue={mousepad.mousepad_id}
                       readOnly
-                      {...register("id", {
+                      {...register("mousepad_id", {
                         required: {
                           value: true,
                           message: "O campo de id deve ser preenchido",

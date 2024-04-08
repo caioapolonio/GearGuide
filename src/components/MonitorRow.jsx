@@ -32,7 +32,7 @@ const MonitorRow = ({
         const { data, error } = await supabase
           .from("monitors")
           .delete()
-          .eq("id", monitorId);
+          .eq("monitor_id", monitorId);
         if (error) {
           console.error("Error deleting monitor:", error.message);
         } else {
@@ -46,11 +46,11 @@ const MonitorRow = ({
   };
 
   const onUpdateMonitor = async (e) => {
-    const { id, name, image_url } = e;
+    const { monitor_id, name, image_url } = e;
     const { data, error } = await supabase
       .from("monitors")
       .update({ name: name, image_url: image_url })
-      .eq("id", id);
+      .eq("monitor_id", monitor_id);
     if (error) {
       console.log("ERROR", error);
       setErrorMessage(error.message);
@@ -64,7 +64,7 @@ const MonitorRow = ({
 
   return (
     <>
-      <Table.Row key={monitor.id} align={"center"}>
+      <Table.Row key={monitor.monitor_id} align={"center"}>
         <Table.RowHeaderCell>{monitor.name}</Table.RowHeaderCell>
         <Table.Cell>{monitor.image_url}</Table.Cell>
         <Table.Cell>
@@ -72,7 +72,7 @@ const MonitorRow = ({
         </Table.Cell>
 
         <Table.Cell>
-          <Button onClick={() => handleDeleteMonitor(monitor.id)}>
+          <Button onClick={() => handleDeleteMonitor(monitor.monitor_id)}>
             Delete
           </Button>
         </Table.Cell>
@@ -96,9 +96,9 @@ const MonitorRow = ({
                       className="rounded-md border border-[#171524] bg-neutral-200 p-2 outline-none"
                       name="id"
                       type="text"
-                      defaultValue={monitor.id}
+                      defaultValue={monitor.monitor_id}
                       readOnly
-                      {...register("id", {
+                      {...register("monitor_id", {
                         required: {
                           value: true,
                           message: "O campo de id deve ser preenchido",

@@ -1,4 +1,5 @@
 import { Button, Flex, Table } from "@radix-ui/themes";
+
 import { useState } from "react";
 import { supabase } from "../db/supabaseClient";
 import * as Dialog from "@radix-ui/react-dialog";
@@ -32,7 +33,7 @@ const EarphoneRow = ({
         const { data, error } = await supabase
           .from("earphones")
           .delete()
-          .eq("id", earphoneId);
+          .eq("earphone_id", earphoneId);
         if (error) {
           console.error("Error deleting earphone:", error.message);
         } else {
@@ -46,11 +47,11 @@ const EarphoneRow = ({
   };
 
   const onUpdateEarphone = async (e) => {
-    const { id, name, image_url } = e;
+    const { earphone_id, name, image_url } = e;
     const { data, error } = await supabase
       .from("earphones")
       .update({ name: name, image_url: image_url })
-      .eq("id", id);
+      .eq("earphone_id", earphone_id);
     if (error) {
       console.log("ERROR", error);
       setErrorMessage(error.message);
@@ -64,7 +65,7 @@ const EarphoneRow = ({
 
   return (
     <>
-      <Table.Row key={earphone.id} align={"center"}>
+      <Table.Row key={earphone.earphone_id} align={"center"}>
         <Table.RowHeaderCell>{earphone.name}</Table.RowHeaderCell>
         <Table.Cell>{earphone.image_url}</Table.Cell>
         <Table.Cell>
@@ -72,7 +73,7 @@ const EarphoneRow = ({
         </Table.Cell>
 
         <Table.Cell>
-          <Button onClick={() => handleDeleteEarphone(earphone.id)}>
+          <Button onClick={() => handleDeleteEarphone(earphone.earphone_id)}>
             Delete
           </Button>
         </Table.Cell>
@@ -96,9 +97,9 @@ const EarphoneRow = ({
                       className="rounded-md border border-[#171524] bg-neutral-200 p-2 outline-none"
                       name="id"
                       type="text"
-                      defaultValue={earphone.id}
+                      defaultValue={earphone.earphone_id}
                       readOnly
-                      {...register("id", {
+                      {...register("earphone_id", {
                         required: {
                           value: true,
                           message: "O campo de id deve ser preenchido",

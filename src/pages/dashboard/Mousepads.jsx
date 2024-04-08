@@ -1,16 +1,17 @@
-import { Button, Table } from "@radix-ui/themes";
+import { Button, Flex, Table, Text, TextField } from "@radix-ui/themes";
 import * as Dialog from "@radix-ui/react-dialog";
 import Dashboard from "../../components/Dashboard";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "../../db/supabaseClient";
-import { CircleXIcon } from "lucide-react";
-import EarphoneRow from "../../components/EarphoneRow";
+import { CircleX, CircleXIcon } from "lucide-react";
+import MousepadRow from "../../components/MousepadRow";
 
-const Earphones = () => {
+const Mousepads = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const [earphonesData, setEarphonesData] = useState([]);
+  const [mousepadsData, setMousepadsData] = useState([]);
 
   const handleInputChange = () => {
     setSuccessMessage("");
@@ -26,36 +27,36 @@ const Earphones = () => {
   const onSubmit = async (e) => {
     const { name, image_url } = e;
     const { data, error } = await supabase
-      .from("earphones")
+      .from("mousepads")
       .insert({ name: name, image_url: image_url });
 
     if (error) {
       console.log("ERROR", error);
       setErrorMessage(error.message);
     } else {
-      setSuccessMessage("Earphone added successfully!");
+      setSuccessMessage("Mousepad added successfully!");
       reset();
-      fetchEarphonesData();
+      fetchMousepadsData();
       console.log("EVENTO", e);
       console.log("DATA", data);
     }
   };
 
-  async function fetchEarphonesData() {
+  async function fetchMousepadsData() {
     try {
-      const { data, error } = await supabase.from("earphones").select("*");
+      const { data, error } = await supabase.from("mousepads").select("*");
       if (error) {
         throw error;
       }
       console.log(data);
-      setEarphonesData(data);
+      setMousepadsData(data);
     } catch (error) {
       console.error("Erro ao recuperar dados:", error.message);
     }
   }
 
   useEffect(() => {
-    fetchEarphonesData();
+    fetchMousepadsData();
   }, []);
 
   return (
@@ -63,14 +64,14 @@ const Earphones = () => {
       <Dialog.Root>
         <div className="flex justify-end pb-4">
           <Dialog.Trigger asChild>
-            <Button variant="outline">Add Earphone</Button>
+            <Button variant="outline">Add Mousepad</Button>
           </Dialog.Trigger>
         </div>
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0" />
           <Dialog.Content className="data-[state=open]:animate-contentShow fixed left-[50%] top-[50%] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-zinc-800 p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
             <Dialog.Title className="flex items-center justify-center text-2xl  font-medium text-white">
-              Add Earphone
+              Add Mousepad
             </Dialog.Title>
             <form
               onSubmit={handleSubmit(onSubmit)}
@@ -156,17 +157,17 @@ const Earphones = () => {
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {earphonesData.map((earphone) => (
-            <EarphoneRow
-              key={earphone.id}
-              earphone={earphone}
-              earphonesData={earphonesData}
-              setEarphonesData={setEarphonesData}
+          {mousepadsData.map((mousepad) => (
+            <MousepadRow
+              key={mousepad.mousepad_id}
+              mousepad={mousepad}
+              mousepadsData={mousepadsData}
+              setMousepadsData={setMousepadsData}
               errorMessage={errorMessage}
               setErrorMessage={setErrorMessage}
               successMessage={successMessage}
               setSuccessMessage={setSuccessMessage}
-              fetchEarphonesData={fetchEarphonesData}
+              fetchMousepadsData={fetchMousepadsData}
             />
           ))}
         </Table.Body>
@@ -175,4 +176,4 @@ const Earphones = () => {
   );
 };
 
-export default Earphones;
+export default Mousepads;
