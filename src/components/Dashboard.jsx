@@ -8,8 +8,8 @@ const Dashboard = ({ children }) => {
 
   return (
     <div className="flex min-h-screen bg-[#1F1C2B]">
-      <aside className="p-4 pr-0 text-white transition-all">
-        <Link to="/" className="flex gap-1 pb-8 pr-4 text-4xl">
+      <aside className=" flex flex-col gap-8 p-4 pr-0 text-white transition-all">
+        <Link to="/" className="pr-4 text-4xl font-bold">
           <span>GearGuide</span>
         </Link>
         <nav className="flex flex-col gap-1 font-bold">

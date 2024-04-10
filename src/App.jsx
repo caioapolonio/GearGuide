@@ -24,7 +24,7 @@ const App = () => {
   }, []);
 
   return (
-    <MantineProvider>
+    <MantineProvider defaultColorScheme="dark">
       <div>
         <Routes>
           <Route

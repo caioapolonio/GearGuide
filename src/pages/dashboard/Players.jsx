@@ -13,6 +13,7 @@ import {
   TextInput,
   Flex,
   NativeSelect,
+  ScrollArea,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 
@@ -181,7 +182,14 @@ const Players = () => {
 
   return (
     <Dashboard>
-      <Modal opened={opened} onClose={close} title="Add Player" centered>
+      <Modal
+        size="md"
+        opened={opened}
+        onClose={close}
+        title="Add Player"
+        scrollAreaComponent={ScrollArea.Autosize}
+        centered
+      >
         <form onSubmit={handleSubmit(onSubmit)}>
           <MultiSelect
             data={games}
@@ -192,7 +200,6 @@ const Players = () => {
             onChange={(i) => {
               setValue("game_id", i);
             }}
-            // value={value.game_id}
           />
           <TextInput
             label="Name"
@@ -264,7 +271,7 @@ const Players = () => {
           />
 
           <Flex justify="center" align="center">
-            <Button fullWidth type="submit" mt="sm">
+            <Button fullWidth type="submit" mt="sm" color="grape">
               Add player
             </Button>
           </Flex>
