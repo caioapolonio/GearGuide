@@ -6,6 +6,7 @@ import {
   TextInput,
   MultiSelect,
   NativeSelect,
+  Select,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { supabase } from "../db/supabaseClient";
@@ -35,6 +36,7 @@ const PlayerRow = ({
   } = useForm();
 
   const [opened, { open, close }] = useDisclosure(false);
+  console.log(monitors);
 
   const handleDeletePlayer = async (playerId) => {
     const confirmed = window.confirm(
@@ -159,38 +161,42 @@ const PlayerRow = ({
             label="Monitor"
             mt="sm"
             data={monitors}
-            defaultValue={player.monitor_id}
+            defaultValue={player.monitor}
             {...register("monitor_id")}
           />
           <NativeSelect
             label="Mouse"
             mt="sm"
             data={mice}
-            defaultValue={player.mouse_id}
+            defaultValue={player.mouse}
             {...register("mouse_id")}
           />
           <NativeSelect
             label="Keyboard"
             mt="sm"
             data={keyboards}
+            defaultValue={player.keyboard}
             {...register("keyboard_id")}
           />
           <NativeSelect
             label="Headset"
             mt="sm"
             data={headsets}
+            defaultValue={player.headset}
             {...register("headset_id")}
           />
           <NativeSelect
             label="Mousepad"
             mt="sm"
             data={mousepads}
+            defaultValue={player.mousepad}
             {...register("mousepad_id")}
           />
           <NativeSelect
             label="Earphone"
             mt="sm"
             data={earphones}
+            defaultValue={player.earphone}
             {...register("earphone_id")}
           />
 

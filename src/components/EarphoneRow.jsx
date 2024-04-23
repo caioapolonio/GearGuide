@@ -44,7 +44,8 @@ const EarphoneRow = ({
     const { data, error } = await supabase
       .from("earphones")
       .update({ name: name, image_url: image_url })
-      .eq("earphone_id", earphone_id);
+      .eq("earphone_id", earphone_id)
+      .select();
     if (error) {
       console.log("ERROR", error);
       setErrorMessage(error.message);
