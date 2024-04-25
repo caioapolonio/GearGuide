@@ -44,10 +44,6 @@ const Navbar = ({ session, setSession }) => {
           </Link>
         </div>
         <div className="flex items-center gap-5 text-white ">
-          <input
-            type="text"
-            className="rounded-md p-1 text-black shadow-inner outline-none"
-          />
           {session ? (
             <div>
               <DropdownMenu.Root>

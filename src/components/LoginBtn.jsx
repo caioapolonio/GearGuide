@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../db/supabaseClient";
+import { Button } from "@mantine/core";
 
 const LoginBtn = ({ session, setSession }) => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -33,9 +34,7 @@ const LoginBtn = ({ session, setSession }) => {
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
-        <button className="rounded-md bg-zinc-700 px-3 py-1 text-sm font-medium ">
-          Login
-        </button>
+        <Button color="gray">Login</Button>
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0" />

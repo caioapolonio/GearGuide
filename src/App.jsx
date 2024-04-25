@@ -12,6 +12,8 @@ import Monitors from "./pages/dashboard/Monitors";
 import Mice from "./pages/dashboard/Mice";
 import "@mantine/core/styles.css";
 import { MantineProvider } from "@mantine/core";
+import GamePage from "./pages/GamePage";
+import PlayerPage from "./pages/PlayerPage";
 const App = () => {
   const [session, setSession] = useState(null);
   useEffect(() => {
@@ -30,6 +32,14 @@ const App = () => {
           <Route
             path="/"
             element={<Home session={session} setSession={setSession} />}
+          />
+          <Route
+            path={"/game/:gameID"}
+            element={<GamePage session={session} setSession={setSession} />}
+          />
+          <Route
+            path={"/player/:playerID"}
+            element={<PlayerPage session={session} setSession={setSession} />}
           />
           <Route
             path={"/dashboard/games"}

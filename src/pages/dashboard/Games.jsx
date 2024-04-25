@@ -127,7 +127,7 @@ const Games = () => {
         <Table.Body>
           {gamesData.map((game) => (
             <GameRow
-              key={game.games_id}
+              key={game.game_id}
               game={game}
               errorMessage={errorMessage}
               setErrorMessage={setErrorMessage}
