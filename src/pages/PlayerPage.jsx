@@ -8,6 +8,34 @@ const PlayerPage = ({ session, setSession }) => {
   const { playerID } = useParams();
   const [player, setPlayer] = useState({});
 
+  const [gears, setGears] = useState({});
+
+  async function fetchGears() {
+    try {
+      const { data, error } = await supabase
+        .from("players")
+        .select(
+          `
+           monitors(monitor_id, name, image_url),
+           mice(mouse_id, name, image_url),
+           keyboards(keyboard_id, name, image_url),
+           headsets(headset_id, name, image_url),
+           mousepads(mousepad_id, name, image_url),
+           earphones(earphone_id, name, image_url)`,
+        )
+        .eq("player_id", playerID)
+        .single();
+
+      if (error) {
+        throw error;
+      }
+      console.log("Gears", data);
+      setGears(data);
+    } catch (error) {
+      console.error("Erro ao recuperar dados:", error.message);
+    }
+  }
+
   async function fetchPlayer() {
     try {
       const { data, error } = await supabase
@@ -26,9 +54,13 @@ const PlayerPage = ({ session, setSession }) => {
   }
   useEffect(() => {
     fetchPlayer();
+    fetchGears();
+    console.log("gears Array", gearsArr);
   }, []);
+
+  const gearsArr = Object.values(gears);
   return (
-    <div className="h-screen bg-[#1F1C2B]">
+    <div className="h-full bg-[#1F1C2B]">
       <Navbar session={session} setSession={setSession} />
       <div className="px-56 pt-6 text-white">
         <div className="flex flex-row gap-6 rounded-3xl bg-[#373644] p-6">
@@ -54,8 +86,25 @@ const PlayerPage = ({ session, setSession }) => {
             <Box size={58} />
             <h2 className="text-3xl font-medium">Gear</h2>
           </div>
-          <div></div>
+          <div className="grid grid-cols-4  gap-12 pt-6">
+            {gearsArr.map((gear) => (
+              <div
+                className="flex h-auto w-full flex-col items-center gap-9 rounded-3xl bg-[#373644] p-6"
+                key={gear.name}
+              >
+                <img
+                  className="h-fit w-fit max-w-36 rounded-full ring-2 ring-white/20"
+                  src={gear.image_url}
+                  alt=""
+                />
+                <span className="text-xl font-normal tracking-wider">
+                  {gear.name}
+                </span>
+              </div>
+            ))}
+          </div>
         </section>
+        <section className="pt-16">footer</section>
       </div>
     </div>
   );
