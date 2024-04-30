@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { supabase } from "../db/supabaseClient";
 import Navbar from "../components/Navbar";
 import { Box } from "lucide-react";
+import { Button } from "@mantine/core";
 
 const PlayerPage = ({ session, setSession }) => {
   const { playerID } = useParams();
@@ -52,6 +53,23 @@ const PlayerPage = ({ session, setSession }) => {
       console.error("Erro ao recuperar dados:", error.message);
     }
   }
+
+  const handleFollow = async () => {
+    const { data, error } = await supabase
+      .from("user_follow_player")
+      .insert({
+        player_id: playerID,
+        user_id: session.id,
+      })
+      .select();
+
+    if (error) {
+      console.log("Erro ao seguir jogador", error);
+    } else {
+      console.log("User follows data", data);
+    }
+  };
+
   useEffect(() => {
     fetchPlayer();
     fetchGears();
@@ -69,10 +87,14 @@ const PlayerPage = ({ session, setSession }) => {
             src={player.image_url}
             alt=""
           />
-
-          <h2 className="pt-6 text-3xl font-bold tracking-widest	">
-            {player.name}
-          </h2>
+          <div className="flex h-fit w-full flex-row items-center justify-between pt-2">
+            <h2 className=" text-3xl font-bold tracking-widest	">
+              {player.name}
+            </h2>
+            <Button color="violet" disabled={!session} onClick={handleFollow}>
+              Follow
+            </Button>
+          </div>
         </div>
         <section>
           <div className="relative flex items-center pt-12">
@@ -86,18 +108,18 @@ const PlayerPage = ({ session, setSession }) => {
             <Box size={58} />
             <h2 className="text-3xl font-medium">Gear</h2>
           </div>
-          <div className="grid grid-cols-4  gap-12 pt-6">
+          <div className="grid grid-cols-1 gap-12 pt-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {gearsArr.map((gear) => (
               <div
-                className="flex h-auto w-full flex-col items-center gap-9 rounded-3xl bg-[#373644] p-6"
+                className="flex h-[300px] w-full flex-col items-center gap-9 rounded-3xl bg-[#373644] p-6"
                 key={gear.name}
               >
                 <img
-                  className="h-fit w-fit max-w-36 rounded-full ring-2 ring-white/20"
+                  className="h-fit w-fit max-w-36"
                   src={gear.image_url}
                   alt=""
                 />
-                <span className="text-xl font-normal tracking-wider">
+                <span className="text-md font-normal tracking-wider">
                   {gear.name}
                 </span>
               </div>

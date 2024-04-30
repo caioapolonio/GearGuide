@@ -27,7 +27,7 @@ const Home = ({ session, setSession }) => {
       <div className="px-56 pt-6 text-white">
         <section>
           <h2 className="text-3xl font-bold">Games</h2>
-          <div className="grid grid-cols-1 pt-10 md:grid-cols-1 lg:grid-cols-2 2xl:grid-cols-4">
+          <div className="grid grid-cols-1 gap-12 pt-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {games.map((game) => (
               <GameCard key={game.game_id} game={game} />
             ))}

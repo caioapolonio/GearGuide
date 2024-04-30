@@ -27,7 +27,7 @@ const App = () => {
 
   return (
     <MantineProvider defaultColorScheme="dark">
-      <div>
+      <>
         <Routes>
           <Route
             path="/"
@@ -74,7 +74,7 @@ const App = () => {
             element={<Keyboards session={session} setSession={setSession} />}
           />
         </Routes>
-      </div>
+      </>
     </MantineProvider>
   );
 };

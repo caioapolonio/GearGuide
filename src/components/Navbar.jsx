@@ -7,7 +7,7 @@ import SignUpBtn from "./SignUpBtn";
 import { useEffect, useState } from "react";
 
 const Navbar = ({ session, setSession }) => {
-  const [user, setUser] = useState([]);
+  const [user, setUser] = useState({});
   let navigate = useNavigate();
 
   useEffect(() => {
@@ -21,8 +21,9 @@ const Navbar = ({ session, setSession }) => {
     const { data: user } = await supabase
       .from("profiles")
       .select("*")
-      .eq("id", session.user.id);
-    setUser(user[0]);
+      .eq("id", session.user.id)
+      .single();
+    setUser(user);
     console.log("USER", user);
   };
   const handleLogout = async () => {

@@ -53,7 +53,7 @@ const GamePage = ({ session, setSession }) => {
     fetchPlayersGames();
   }, []);
   return (
-    <div className="h-screen bg-[#1F1C2B]">
+    <div className="h-full min-h-screen bg-[#1F1C2B]">
       <Navbar session={session} setSession={setSession} />
       <div className="px-56 pt-6 text-white">
         <div className="flex flex-row gap-6">
@@ -70,15 +70,15 @@ const GamePage = ({ session, setSession }) => {
         </div>
         <section className="pt-6">
           <h3 className="text-3xl font-medium">Top {game.name} players</h3>
-          <div className="grid grid-cols-4  pt-6">
+          <div className="grid grid-cols-1 gap-12 pt-6 md:grid-cols-2  lg:grid-cols-3 xl:grid-cols-4">
             {players.map((player) => {
               return (
                 <Link
                   key={player.players.player_id}
-                  className="w-fit"
+                  className="w-full"
                   to={`/player/${player.player_id}`}
                 >
-                  <div className=" flex h-auto w-[240px] flex-col items-center rounded-3xl bg-[#373644] p-6">
+                  <div className=" flex h-[300px] w-full flex-col items-center rounded-3xl bg-[#373644] p-6">
                     <img
                       className="rounded-full ring-2 ring-white/20"
                       src={player.players.image_url}
