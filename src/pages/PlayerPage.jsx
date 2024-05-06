@@ -8,7 +8,6 @@ import { Button } from "@mantine/core";
 const PlayerPage = ({ session, setSession }) => {
   const { playerID } = useParams();
   const [player, setPlayer] = useState({});
-
   const [gears, setGears] = useState({});
 
   async function fetchGears() {
@@ -69,11 +68,37 @@ const PlayerPage = ({ session, setSession }) => {
       console.log("User follows data", data);
     }
   };
+  async function checkFollow() {
+    try {
+      const { data, error } = await supabase
+        .from("user_follow_player")
+        .select(
+          `
+        player_id,
+        user_id
+      `,
+        )
+        .match({ player_id: playerID, user_id: session.id });
+
+      if (error) {
+        throw error;
+      }
+      console.log("checkFollow", data);
+      if (data) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      console.error("Erro ao recuperar dados de seguindo:", error.message);
+    }
+  }
 
   useEffect(() => {
     fetchPlayer();
     fetchGears();
     console.log("gears Array", gearsArr);
+    checkFollow();
   }, []);
 
   const gearsArr = Object.values(gears);

@@ -16,6 +16,7 @@ import GamePage from "./pages/GamePage";
 import PlayerPage from "./pages/PlayerPage";
 const App = () => {
   const [session, setSession] = useState(null);
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
