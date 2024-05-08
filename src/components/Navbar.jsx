@@ -66,11 +66,6 @@ const Navbar = ({ session, setSession }) => {
                     align="end"
                     alignOffset={-20}
                   >
-                    <DropdownMenu.Item className=" group flex items-center gap-1 rounded-md py-1 text-[#CDC6CD] outline-none transition-all hover:cursor-pointer hover:text-white">
-                      <UserRound />
-                      <span className="text-md ">Meu Perfil</span>
-                    </DropdownMenu.Item>
-                    <DropdownMenu.Separator className="h-[1px] bg-[#CDC6CD] " />
                     {user.role === "admin" && (
                       <DropdownMenu.Item className="group flex items-center gap-1 rounded-md py-1 text-[#CDC6CD] outline-none transition-all hover:cursor-pointer hover:text-white">
                         <BarChart4 />

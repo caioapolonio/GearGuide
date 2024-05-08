@@ -17,7 +17,8 @@ const GamePage = ({ session, setSession }) => {
         player_id,
         game_id,
         games ( game_id ),
-        players ( player_id, name, image_url)
+        players ( player_id, name, image_url, team)
+        teams ( team_id, name, image_url ),
       `,
         )
         .eq("game_id", gameID);
@@ -78,7 +79,7 @@ const GamePage = ({ session, setSession }) => {
                   className="mx-auto w-fit sm:mx-0"
                   to={`/player/${player.player_id}`}
                 >
-                  <div className=" flex h-[380px] w-[334px] flex-col items-center rounded-3xl bg-[#373644] p-6 sm:w-full">
+                  <div className=" flex h-full w-[334px] flex-col items-center rounded-3xl bg-[#373644] p-6 sm:w-full">
                     <img
                       className="rounded-full ring-2 ring-white/20"
                       src={player.players.image_url}
@@ -93,6 +94,7 @@ const GamePage = ({ session, setSession }) => {
             })}
           </div>
         </section>
+        <section className="pt-6">footer</section>
       </div>
     </div>
   );
