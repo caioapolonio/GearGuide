@@ -22,12 +22,12 @@ const Home = ({ session, setSession }) => {
     fetchGamesData();
   }, []);
   return (
-    <div className="h-screen bg-[#1F1C2B]">
+    <div className="h-full min-h-screen bg-[#1F1C2B]">
       <Navbar session={session} setSession={setSession} />
-      <div className="px-56 pt-6 text-white">
+      <div className="lg:px-30 px-10 pt-6 text-white sm:px-32 md:px-20 xl:px-56 ">
         <section>
           <h2 className="text-3xl font-bold">Games</h2>
-          <div className="grid grid-cols-1 gap-12 pt-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid grid-cols-1 gap-12 pt-10 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
             {games.map((game) => (
               <GameCard key={game.game_id} game={game} />
             ))}

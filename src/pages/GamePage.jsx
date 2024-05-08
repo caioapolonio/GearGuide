@@ -55,8 +55,8 @@ const GamePage = ({ session, setSession }) => {
   return (
     <div className="h-full min-h-screen bg-[#1F1C2B]">
       <Navbar session={session} setSession={setSession} />
-      <div className="px-56 pt-6 text-white">
-        <div className="flex flex-row gap-6">
+      <div className="lg:px-30 px-10 pt-6 text-white sm:px-20 md:px-20 xl:px-56 ">
+        <div className="flex flex-col gap-6 sm:flex-row">
           <div className="h-[360px] w-[320px] overflow-hidden rounded-3xl">
             <img
               className="h-full w-full object-cover"
@@ -68,17 +68,17 @@ const GamePage = ({ session, setSession }) => {
             {game.name}
           </h2>
         </div>
-        <section className="pt-6">
+        <section className="mt-4 border-t-2 border-neutral-500 pt-6">
           <h3 className="text-3xl font-medium">Top {game.name} players</h3>
-          <div className="grid grid-cols-1 gap-12 pt-6 md:grid-cols-2  lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid grid-cols-1 gap-12 pt-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
             {players.map((player) => {
               return (
                 <Link
                   key={player.players.player_id}
-                  className="w-full"
+                  className="mx-auto w-fit sm:mx-0"
                   to={`/player/${player.player_id}`}
                 >
-                  <div className=" flex h-[300px] w-full flex-col items-center rounded-3xl bg-[#373644] p-6">
+                  <div className=" flex h-[380px] w-[334px] flex-col items-center rounded-3xl bg-[#373644] p-6 sm:w-full">
                     <img
                       className="rounded-full ring-2 ring-white/20"
                       src={player.players.image_url}

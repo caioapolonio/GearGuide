@@ -1,5 +1,5 @@
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { BarChart4, LogOut, UserRound } from "lucide-react";
+import { BarChart4, LogOut, Menu, UserRound, X } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../db/supabaseClient";
 import LoginBtn from "./LoginBtn";
@@ -9,6 +9,8 @@ import { useEffect, useState } from "react";
 const Navbar = ({ session, setSession }) => {
   const [user, setUser] = useState({});
   let navigate = useNavigate();
+
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     if (session) {
@@ -38,13 +40,13 @@ const Navbar = ({ session, setSession }) => {
 
   return (
     <nav>
-      <header className="flex h-20 w-full justify-between bg-[#1b1a25] px-16">
+      <header className="sticky top-0 z-10 mx-auto flex min-h-20 w-full flex-wrap items-center justify-between overflow-hidden bg-[#1b1a25] p-6 md:px-16">
         <div className="flex items-center">
           <Link to="/" className="text-4xl font-bold text-white ">
             GearGuide
           </Link>
         </div>
-        <div className="flex items-center gap-5 text-white ">
+        <div className="hidden items-center gap-5 text-white md:flex ">
           {session ? (
             <div>
               <DropdownMenu.Root>
@@ -97,6 +99,17 @@ const Navbar = ({ session, setSession }) => {
             </div>
           )}
         </div>
+        <div className="md:hidden">
+          <button onClick={() => setIsOpen(!isOpen)}>
+            {isOpen ? <X color="white" /> : <Menu color="white" />}
+          </button>
+        </div>
+        {isOpen && (
+          <div className="mt-4 flex basis-full flex-col items-center gap-6 border-t-2 border-neutral-500 pt-8 transition-all md:hidden">
+            <LoginBtn session={session} setSession={setSession} />
+            <SignUpBtn />
+          </div>
+        )}
       </header>
     </nav>
   );

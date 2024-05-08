@@ -9,6 +9,7 @@ const PlayerPage = ({ session, setSession }) => {
   const { playerID } = useParams();
   const [player, setPlayer] = useState({});
   const [gears, setGears] = useState({});
+  const [follow, setFollow] = useState(false);
 
   async function fetchGears() {
     try {
@@ -67,6 +68,7 @@ const PlayerPage = ({ session, setSession }) => {
     } else {
       console.log("User follows data", data);
     }
+    setFollow(!follow);
   };
   async function checkFollow() {
     try {
@@ -78,46 +80,48 @@ const PlayerPage = ({ session, setSession }) => {
         user_id
       `,
         )
-        .match({ player_id: playerID, user_id: session.id });
-
+        .match({ player_id: playerID, user_id: session.user.id });
       if (error) {
         throw error;
       }
       console.log("checkFollow", data);
-      if (data) {
+
+      if (data.length > 0) {
+        setFollow(true);
         return true;
-      } else {
-        return false;
       }
     } catch (error) {
       console.error("Erro ao recuperar dados de seguindo:", error.message);
     }
+    console.log("checkFollow", checkFollow);
   }
 
   useEffect(() => {
     fetchPlayer();
     fetchGears();
     console.log("gears Array", gearsArr);
-    checkFollow();
-  }, []);
+    if (session) {
+      checkFollow();
+    }
+  }, [session]);
 
   const gearsArr = Object.values(gears);
   return (
-    <div className="h-full bg-[#1F1C2B]">
+    <div className="h-full min-h-screen bg-[#1F1C2B]">
       <Navbar session={session} setSession={setSession} />
-      <div className="px-56 pt-6 text-white">
-        <div className="flex flex-row gap-6 rounded-3xl bg-[#373644] p-6">
+      <div className="lg:px-30 px-10 pt-6 text-white sm:px-20 md:px-20  xl:px-56">
+        <div className="flex flex-col gap-6 rounded-3xl bg-[#373644] p-6 sm:flex-row">
           <img
             className="rounded-full ring-2 ring-white/20"
             src={player.image_url}
             alt=""
           />
-          <div className="flex h-fit w-full flex-row items-center justify-between pt-2">
+          <div className="flex h-fit w-full flex-row items-center justify-between pt-2 sm:flex-col sm:gap-4 md:flex-row">
             <h2 className=" text-3xl font-bold tracking-widest	">
               {player.name}
             </h2>
             <Button color="violet" disabled={!session} onClick={handleFollow}>
-              Follow
+              {follow ? "Unfollow" : "Follow"}
             </Button>
           </div>
         </div>
