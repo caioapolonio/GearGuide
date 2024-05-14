@@ -1,5 +1,4 @@
-import { Table } from "@radix-ui/themes";
-import { Button, Modal, Flex, TextInput } from "@mantine/core";
+import { Button, Modal, Flex, TextInput, Table } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { supabase } from "../db/supabaseClient";
 import { useForm } from "react-hook-form";
@@ -59,15 +58,14 @@ const GameRow = ({
 
   return (
     <>
-      <Table.Row align={"center"}>
-        <Table.RowHeaderCell>{game.name}</Table.RowHeaderCell>
-        <Table.Cell>{game.image_url}</Table.Cell>
-        <Table.Cell>
+      <Table.Tr align={"center"}>
+        <Table.Td>{game.name}</Table.Td>
+        <Table.Td>
           <Button variant="outline" onClick={open}>
             Edit
           </Button>
-        </Table.Cell>
-        <Table.Cell>
+        </Table.Td>
+        <Table.Td>
           <Button
             variant="outline"
             color="red"
@@ -75,8 +73,8 @@ const GameRow = ({
           >
             Delete
           </Button>
-        </Table.Cell>
-      </Table.Row>
+        </Table.Td>
+      </Table.Tr>
 
       <Modal opened={opened} onClose={close} title="Edit Game" centered>
         <form

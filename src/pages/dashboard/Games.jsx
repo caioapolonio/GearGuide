@@ -2,8 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "../../db/supabaseClient";
 import { useForm } from "react-hook-form";
 import { useDisclosure } from "@mantine/hooks";
-import { Modal, Button, Flex, TextInput } from "@mantine/core";
-import { Table } from "@radix-ui/themes";
+import { Modal, Button, Flex, TextInput, Table } from "@mantine/core";
 import Dashboard from "../../components/Dashboard";
 import GameRow from "../../components/GameRow";
 
@@ -115,16 +114,15 @@ const Games = () => {
         <Button onClick={open}>Add Game</Button>
       </Flex>
 
-      <Table.Root variant="surface" size={3} layout={"fixed"}>
-        <Table.Header>
-          <Table.Row>
-            <Table.ColumnHeaderCell>Name</Table.ColumnHeaderCell>
-            <Table.ColumnHeaderCell>Image</Table.ColumnHeaderCell>
-            <Table.ColumnHeaderCell></Table.ColumnHeaderCell>
-            <Table.ColumnHeaderCell></Table.ColumnHeaderCell>
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
+      <Table withTableBorder layout="fixed">
+        <Table.Thead>
+          <Table.Tr>
+            <Table.Th>Name</Table.Th>
+            <Table.Th></Table.Th>
+            <Table.Th></Table.Th>
+          </Table.Tr>
+        </Table.Thead>
+        <Table.Tbody>
           {gamesData.map((game) => (
             <GameRow
               key={game.game_id}
@@ -137,8 +135,8 @@ const Games = () => {
               handleInputChange={handleInputChange}
             />
           ))}
-        </Table.Body>
-      </Table.Root>
+        </Table.Tbody>
+      </Table>
     </Dashboard>
   );
 };

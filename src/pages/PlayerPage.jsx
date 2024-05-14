@@ -130,7 +130,7 @@ const PlayerPage = ({ session, setSession }) => {
             alt=""
           />
           <div className="flex h-fit w-full flex-col ">
-            <div className="flex flex-row items-center justify-between pb-3 pt-2 sm:flex-col sm:gap-4 md:flex-row">
+            <div className="flex flex-row items-center justify-between pb-6 pt-2 sm:flex-col sm:gap-4 md:flex-row">
               <h2 className=" text-3xl font-bold tracking-widest	">
                 {player?.name}
               </h2>

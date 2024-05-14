@@ -1,16 +1,16 @@
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { BarChart4, LogOut, Menu, UserRound, X } from "lucide-react";
+import { BarChart4, LogOut, X } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../db/supabaseClient";
 import LoginBtn from "./LoginBtn";
 import SignUpBtn from "./SignUpBtn";
 import { useEffect, useState } from "react";
+import { Modal, Menu } from "@mantine/core";
 
 const Navbar = ({ session, setSession }) => {
+  const [openFollowing, setOpenFollowing] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState({});
   let navigate = useNavigate();
-
-  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     if (session) {
@@ -28,6 +28,7 @@ const Navbar = ({ session, setSession }) => {
     setUser(user);
     console.log("USER", user);
   };
+
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
@@ -40,52 +41,62 @@ const Navbar = ({ session, setSession }) => {
 
   return (
     <nav>
+      <Modal
+        opened={openFollowing}
+        onClose={() => setOpenFollowing(false)}
+        centered
+        title="Following"
+      >
+        eita bixo
+      </Modal>
+
       <header className="sticky top-0 z-10 mx-auto flex min-h-20 w-full flex-wrap items-center justify-between overflow-hidden bg-[#1b1a25] p-6 md:px-16">
         <div className="flex items-center">
           <Link to="/" className="text-4xl font-bold text-white ">
             GearGuide
           </Link>
         </div>
-        <div className="hidden items-center gap-5 text-white md:flex ">
+
+        <div className="hidden items-center gap-5 text-white md:flex">
           {session ? (
-            <div>
-              <DropdownMenu.Root>
-                <DropdownMenu.Trigger asChild>
+            <div className="flex flex-row items-center gap-6">
+              <div>
+                <button
+                  onClick={() => setOpenFollowing(true)}
+                  className="cursor-pointer font-medium"
+                >
+                  Following
+                </button>
+              </div>
+              <Menu shadow="md" width={200}>
+                <Menu.Target>
                   <div className="flex items-center justify-center gap-2 hover:cursor-pointer ">
                     <div className="h-12 w-12 ">
                       <img className="rounded-full" src={user.avatar_url} />
                     </div>
                     <span className="text-2xl">{user.username}</span>
                   </div>
-                </DropdownMenu.Trigger>
-
-                <DropdownMenu.Portal>
-                  <DropdownMenu.Content
-                    className="min-w-[300px] rounded-md bg-[#494657] p-4 shadow-md"
-                    sideOffset={2}
-                    align="end"
-                    alignOffset={-20}
-                  >
-                    {user.role === "admin" && (
-                      <DropdownMenu.Item className="group flex items-center gap-1 rounded-md py-1 text-[#CDC6CD] outline-none transition-all hover:cursor-pointer hover:text-white">
-                        <BarChart4 />
+                </Menu.Target>
+                <Menu.Dropdown>
+                  {user.role === "admin" && (
+                    <>
+                      <Menu.Item leftSection={<BarChart4 />}>
                         <Link to="/dashboard/games" className="text-md">
                           Dashboard
                         </Link>
-                      </DropdownMenu.Item>
-                    )}
-
-                    <DropdownMenu.Separator className="h-[1px] bg-[#CDC6CD]  " />
-
-                    <DropdownMenu.Item className=" group flex items-center gap-1 rounded-md py-1 text-[#CDC6CD] outline-none transition-all hover:cursor-pointer hover:text-white">
-                      <LogOut />
-                      <button onClick={handleLogout}>Sair</button>
-                    </DropdownMenu.Item>
-
-                    <DropdownMenu.Arrow className="fill-[#494657]" />
-                  </DropdownMenu.Content>
-                </DropdownMenu.Portal>
-              </DropdownMenu.Root>
+                      </Menu.Item>
+                      <Menu.Divider />
+                    </>
+                  )}
+                  <Menu.Item
+                    onClick={handleLogout}
+                    color="red"
+                    leftSection={<LogOut />}
+                  >
+                    Sair
+                  </Menu.Item>
+                </Menu.Dropdown>
+              </Menu>
             </div>
           ) : (
             <div className=" flex items-center justify-center gap-3">
