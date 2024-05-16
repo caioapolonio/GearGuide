@@ -1,13 +1,15 @@
-import { BarChart4, LogOut, X } from "lucide-react";
+import { BarChart4, LogOut, X, Menu as MenuIcon } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../db/supabaseClient";
 import LoginBtn from "./LoginBtn";
 import SignUpBtn from "./SignUpBtn";
 import { useEffect, useState } from "react";
 import { Modal, Menu } from "@mantine/core";
+import { set } from "react-hook-form";
 
 const Navbar = ({ session, setSession }) => {
   const [openFollowing, setOpenFollowing] = useState(false);
+  const [following, setFollowing] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState({});
   let navigate = useNavigate();
@@ -18,6 +20,29 @@ const Navbar = ({ session, setSession }) => {
       console.log("user logged in");
     }
   }, [session]);
+
+  async function handleFollowing() {
+    try {
+      const { data, error } = await supabase
+        .from("user_follow_player")
+        .select(
+          `
+        player_id,
+        user_id,
+        players (name, player_id, image_url, team)
+      `,
+        )
+        .eq("user_id", session.user.id);
+
+      if (error) {
+        throw error;
+      }
+      console.log("handleFollowing", data);
+      setFollowing(data);
+    } catch (error) {
+      console.error("Erro ao recuperar dados de seguindo:", error.message);
+    }
+  }
 
   const handleUser = async () => {
     const { data: user } = await supabase
@@ -41,16 +66,7 @@ const Navbar = ({ session, setSession }) => {
 
   return (
     <nav>
-      <Modal
-        opened={openFollowing}
-        onClose={() => setOpenFollowing(false)}
-        centered
-        title="Following"
-      >
-        eita bixo
-      </Modal>
-
-      <header className="sticky top-0 z-10 mx-auto flex min-h-20 w-full flex-wrap items-center justify-between overflow-hidden bg-[#1b1a25] p-6 md:px-16">
+      <header className="sticky top-0 z-10 mx-auto flex min-h-20 w-full flex-wrap items-center justify-between overflow-hidden bg-[#1b1a25] p-6 text-white md:px-16">
         <div className="flex items-center">
           <Link to="/" className="text-4xl font-bold text-white ">
             GearGuide
@@ -62,7 +78,10 @@ const Navbar = ({ session, setSession }) => {
             <div className="flex flex-row items-center gap-6">
               <div>
                 <button
-                  onClick={() => setOpenFollowing(true)}
+                  onClick={() => {
+                    setOpenFollowing(true);
+                    handleFollowing();
+                  }}
                   className="cursor-pointer font-medium"
                 >
                   Following
@@ -105,17 +124,61 @@ const Navbar = ({ session, setSession }) => {
             </div>
           )}
         </div>
-        <div className="md:hidden">
+        <div className="flex md:hidden">
           <button onClick={() => setIsOpen(!isOpen)}>
-            {isOpen ? <X color="white" /> : <Menu color="white" />}
+            {isOpen ? <X color="white" /> : <MenuIcon color="white" />}
           </button>
         </div>
+
         {isOpen && (
           <div className="mt-4 flex basis-full flex-col items-center gap-6 border-t-2 border-neutral-500 pt-8 transition-all md:hidden">
-            <LoginBtn session={session} setSession={setSession} />
-            <SignUpBtn />
+            {!session ? (
+              <>
+                <LoginBtn session={session} setSession={setSession} />
+                <SignUpBtn />
+              </>
+            ) : (
+              <div>Hi</div>
+            )}
           </div>
         )}
+        <Modal
+          opened={openFollowing}
+          onClose={() => {
+            setOpenFollowing(false);
+          }}
+          centered
+          title="Following"
+        >
+          <div className="flex flex-col gap-4">
+            {following.map((player) => {
+              return (
+                <div
+                  key={player.players.player_id}
+                  className="flex flex-row items-center justify-between "
+                >
+                  <div className="flex flex-row items-center gap-4">
+                    <Link to={`/player/${player.player_id}`}>
+                      <img
+                        src={player.players.image_url}
+                        className="h-12 rounded-full bg-white"
+                        alt=""
+                      />
+                    </Link>
+
+                    <div className="flex flex-col">
+                      <span className="text-white">
+                        <Link to={`/player/${player.player_id}`}>
+                          {player.players.name}
+                        </Link>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </Modal>
       </header>
     </nav>
   );

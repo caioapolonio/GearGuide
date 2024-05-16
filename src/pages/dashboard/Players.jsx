@@ -105,17 +105,6 @@ const Players = () => {
       console.log("ERROR", error);
       setErrorMessage(error.message);
     }
-
-    // if (games_has_players_error) {
-    //   console.log("ERROR", games_has_players_error);
-    //   setErrorMessage(games_has_players_error.message);
-    // } else {
-    //   setSuccessMessage("Player added successfully!");
-    //   reset();
-    //   fetchPlayersData();
-    //   console.log("PLAYER_PLAYS EVENT", e);
-    //   console.log("PLAYER_PLAYS DATA", games_has_players);
-    // }
   };
 
   async function fetchPlayersData() {
@@ -199,6 +188,7 @@ const Players = () => {
             {...register("game_id")}
             onChange={(i) => {
               setValue("game_id", i);
+              console.log("game_id", i);
             }}
           />
           <TextInput

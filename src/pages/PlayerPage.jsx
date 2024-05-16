@@ -4,6 +4,10 @@ import { supabase } from "../db/supabaseClient";
 import Navbar from "../components/Navbar";
 import { Box } from "lucide-react";
 import { Button, Table } from "@mantine/core";
+import Container from "../components/Container";
+import Footer from "../components/Footer";
+import PageLayout from "../components/PageLayout";
+import GridContainer from "../components/GridContainer";
 
 const PlayerPage = ({ session, setSession }) => {
   const { playerID } = useParams();
@@ -11,32 +15,14 @@ const PlayerPage = ({ session, setSession }) => {
   const [gears, setGears] = useState({});
   const [follow, setFollow] = useState(false);
 
-  async function fetchGears() {
-    try {
-      const { data, error } = await supabase
-        .from("players")
-        .select(
-          `
-           monitors(monitor_id, name, image_url),
-           mice(mouse_id, name, image_url),
-           keyboards(keyboard_id, name, image_url),
-           headsets(headset_id, name, image_url),
-           mousepads(mousepad_id, name, image_url),
-           earphones(earphone_id, name, image_url)
-           `,
-        )
-        .eq("player_id", playerID)
-        .single();
-
-      if (error) {
-        throw error;
-      }
-      console.log("Gears", data);
-      setGears(data);
-    } catch (error) {
-      console.error("Erro ao recuperar dados:", error.message);
+  useEffect(() => {
+    fetchPlayer();
+    fetchGears();
+    console.log("gears Array", gearsArr);
+    if (session) {
+      checkFollow();
     }
-  }
+  }, [session]);
 
   async function fetchPlayer() {
     try {
@@ -65,22 +51,34 @@ const PlayerPage = ({ session, setSession }) => {
     }
   }
 
-  const handleFollow = async () => {
-    const { data, error } = await supabase
-      .from("user_follow_player")
-      .insert({
-        player_id: playerID,
-        user_id: session.id,
-      })
-      .select();
+  async function fetchGears() {
+    try {
+      const { data, error } = await supabase
+        .from("players")
+        .select(
+          `
+           monitors(monitor_id, name, image_url),
+           mice(mouse_id, name, image_url),
+           keyboards(keyboard_id, name, image_url),
+           headsets(headset_id, name, image_url),
+           mousepads(mousepad_id, name, image_url),
+           earphones(earphone_id, name, image_url)
+           `,
+        )
+        .eq("player_id", playerID)
+        .single();
 
-    if (error) {
-      console.log("Erro ao seguir jogador", error);
-    } else {
-      console.log("User follows data", data);
+      if (error) {
+        throw error;
+      }
+      console.log("Gears", data);
+      setGears(data);
+    } catch (error) {
+      console.error("Erro ao recuperar dados:", error.message);
     }
-    setFollow(!follow);
-  };
+  }
+  const gearsArr = Object.values(gears);
+  const gearsArrFiltered = gearsArr.filter((gear) => gear.name !== "N/A");
 
   async function checkFollow() {
     try {
@@ -93,6 +91,7 @@ const PlayerPage = ({ session, setSession }) => {
       `,
         )
         .match({ player_id: playerID, user_id: session.user.id });
+
       if (error) {
         throw error;
       }
@@ -105,24 +104,47 @@ const PlayerPage = ({ session, setSession }) => {
     } catch (error) {
       console.error("Erro ao recuperar dados de seguindo:", error.message);
     }
-    console.log("checkFollow", checkFollow);
   }
 
-  const gearsArr = Object.values(gears);
+  async function handleUnfollow() {
+    try {
+      const { data, error } = await supabase
+        .from("user_follow_player")
+        .delete()
+        .match({ player_id: playerID, user_id: session.user.id })
+        .select();
 
-  useEffect(() => {
-    fetchPlayer();
-    fetchGears();
-    console.log("gears Array", gearsArr);
-    if (session) {
-      checkFollow();
+      if (error) {
+        throw error;
+      }
+      console.log("handleUnfollow", data);
+    } catch (error) {
+      console.error("Erro ao recuperar dados de seguindo:", error.message);
     }
-  }, [session]);
+    setFollow(!follow);
+  }
+
+  const handleFollow = async () => {
+    const { data, error } = await supabase
+      .from("user_follow_player")
+      .insert({
+        player_id: playerID,
+        user_id: session.id,
+      })
+      .select();
+
+    if (error) {
+      console.log("Erro ao seguir jogador", error);
+    } else {
+      console.log("handleFollow", data);
+    }
+    setFollow(!follow);
+  };
 
   return (
-    <div className="h-full min-h-screen bg-[#1F1C2B]">
+    <PageLayout>
       <Navbar session={session} setSession={setSession} />
-      <div className="lg:px-30 px-10 pt-6 text-white sm:px-20 md:px-20  xl:px-56">
+      <Container>
         <div className="flex flex-col gap-6 rounded-3xl bg-[#373644] p-6 sm:flex-row">
           <img
             className="rounded-full ring-2 ring-white/20"
@@ -134,7 +156,13 @@ const PlayerPage = ({ session, setSession }) => {
               <h2 className=" text-3xl font-bold tracking-widest	">
                 {player?.name}
               </h2>
-              <Button color="violet" disabled={!session} onClick={handleFollow}>
+              <Button
+                color={follow ? "dark" : "violet"}
+                disabled={!session}
+                onClick={() => {
+                  follow ? handleUnfollow() : handleFollow();
+                }}
+              >
                 {follow ? "Unfollow" : "Follow"}
               </Button>
             </div>
@@ -167,7 +195,7 @@ const PlayerPage = ({ session, setSession }) => {
                     <Table.Td className="flex flex-row items-center gap-2">
                       {player?.countries?.name}
                       <img
-                        className="h-4"
+                        className="w-5"
                         src={player?.countries?.image_url}
                         alt=""
                       />
@@ -221,7 +249,7 @@ const PlayerPage = ({ session, setSession }) => {
           </div>
         </div>
 
-        <section>
+        <section className="pb-10">
           <div className="relative flex items-center pt-12">
             <div className="flex-grow border-2 border-t border-[#373644]"></div>
             <span className="mx-4 flex-shrink text-3xl font-medium">
@@ -233,32 +261,32 @@ const PlayerPage = ({ session, setSession }) => {
             <Box size={58} />
             <h2 className="text-3xl font-medium">Gear</h2>
           </div>
-          <div className="grid grid-cols-1 gap-12 pt-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
-            {gearsArr.map((gear) => (
+          <GridContainer>
+            {gearsArrFiltered.map((gear) => (
               <a
                 href={`https://www.amazon.com.br/s?k=${encodeURIComponent(gear.name)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 key={gear.name}
-                className="group"
+                className="group mx-auto h-full w-full text-gray-300 sm:mx-0"
               >
-                <div className="flex h-[300px] w-full flex-col items-center gap-9 rounded-3xl bg-[#373644] p-6 2xl:w-[230px]  ">
+                <div className="flex h-full w-full flex-col items-center gap-8 rounded-3xl bg-[#373644] p-4 transition-colors duration-300 hover:bg-[#4a4a5e]">
                   <img
-                    className="h-fit w-fit max-w-36"
+                    className="h-36 w-36 rounded-full object-cover"
                     src={gear.image_url}
                     alt=""
                   />
-                  <span className="text-md  font-normal  group-hover:font-medium">
+                  <span className="text-sm font-medium transition-colors duration-300 hover:text-white">
                     {gear.name}
                   </span>
                 </div>
               </a>
             ))}
-          </div>
+          </GridContainer>
         </section>
-        <section className="pt-16">footer</section>
-      </div>
-    </div>
+      </Container>
+      <Footer />
+    </PageLayout>
   );
 };
 
