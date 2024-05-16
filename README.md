@@ -7,9 +7,10 @@
 
 ![image](https://github.com/cvmA/GearGuide/assets/101464470/4022680e-e863-49af-aa42-ca94791794e6)
 
-# Nome do Projeto
+# GearGuide
 
-Breve descrição do projeto e suas funcionalidades.
+GearGuide é um banco de dados de E-sports, onde o usuário conseguirá ver os jogadores por jogo, time ou nacionalidade, e ver os equipamentos que o jogador usa,
+podendo comprar o equipamento em uma loja externa ao clicar no equipamento, o usuário também pode seguir o jogador para ser mais prático encontrar seu jogador favorito.
 
 ## Tecnologias Utilizadas
 
