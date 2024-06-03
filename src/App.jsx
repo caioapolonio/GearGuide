@@ -14,68 +14,82 @@ import "@mantine/core/styles.css";
 import { MantineProvider } from "@mantine/core";
 import GamePage from "./pages/GamePage";
 import PlayerPage from "./pages/PlayerPage";
+import ProtectedRouteAdmin from "./components/ProtectedRouteAdmin";
+import { AuthProvider } from "./hooks/AuthContext";
 const App = () => {
-  const [session, setSession] = useState(null);
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-    });
-    supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
-  }, []);
-
   return (
     <MantineProvider defaultColorScheme="dark">
-      <>
+      <AuthProvider>
         <Routes>
-          <Route
-            path="/"
-            element={<Home session={session} setSession={setSession} />}
-          />
-          <Route
-            path={"/game/:gameID"}
-            element={<GamePage session={session} setSession={setSession} />}
-          />
-          <Route
-            path={"/player/:playerID"}
-            element={<PlayerPage session={session} setSession={setSession} />}
-          />
+          <Route path="/" element={<Home />} />
+          <Route path={"/game/:gameID"} element={<GamePage />} />
+          <Route path={"/player/:playerID"} element={<PlayerPage />} />
           <Route
             path={"/dashboard/games"}
-            element={<Games session={session} setSession={setSession} />}
+            element={
+              <ProtectedRouteAdmin>
+                <Games />
+              </ProtectedRouteAdmin>
+            }
           />
           <Route
             path={"/dashboard/players"}
-            element={<Players session={session} setSession={setSession} />}
+            element={
+              <ProtectedRouteAdmin>
+                <Players />
+              </ProtectedRouteAdmin>
+            }
           />
           <Route
             path={"/dashboard/earphones"}
-            element={<Earphones session={session} setSession={setSession} />}
+            element={
+              <ProtectedRouteAdmin>
+                <Earphones />
+              </ProtectedRouteAdmin>
+            }
           />
           <Route
             path={"/dashboard/headsets"}
-            element={<Headsets session={session} setSession={setSession} />}
+            element={
+              <ProtectedRouteAdmin>
+                <Headsets />
+              </ProtectedRouteAdmin>
+            }
           />
           <Route
             path={"/dashboard/mice"}
-            element={<Mice session={session} setSession={setSession} />}
+            element={
+              <ProtectedRouteAdmin>
+                <Mice />
+              </ProtectedRouteAdmin>
+            }
           />
           <Route
             path={"/dashboard/mousepads"}
-            element={<Mousepads session={session} setSession={setSession} />}
+            element={
+              <ProtectedRouteAdmin>
+                <Mousepads />
+              </ProtectedRouteAdmin>
+            }
           />
           <Route
             path={"/dashboard/monitors"}
-            element={<Monitors session={session} setSession={setSession} />}
+            element={
+              <ProtectedRouteAdmin>
+                <Monitors />
+              </ProtectedRouteAdmin>
+            }
           />
           <Route
             path={"/dashboard/keyboards"}
-            element={<Keyboards session={session} setSession={setSession} />}
+            element={
+              <ProtectedRouteAdmin>
+                <Keyboards />
+              </ProtectedRouteAdmin>
+            }
           />
         </Routes>
-      </>
+      </AuthProvider>
     </MantineProvider>
   );
 };

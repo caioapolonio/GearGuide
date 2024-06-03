@@ -45,13 +45,22 @@ const Navbar = ({ session, setSession }) => {
   }
 
   const handleUser = async () => {
-    const { data: user } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", session.user.id)
-      .single();
-    setUser(user);
-    console.log("USER", user);
+    try {
+      const { data: user, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", session.user.id)
+        .single();
+
+      if (error) {
+        throw error;
+      }
+
+      setUser(user);
+      console.log("USER", user);
+    } catch (error) {
+      console.error("Error fetching user data:", error.message);
+    }
   };
 
   const handleLogout = async () => {

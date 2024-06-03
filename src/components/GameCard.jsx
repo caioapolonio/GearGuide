@@ -4,7 +4,7 @@ const GameCard = ({ game }) => {
   return (
     <Link
       to={`/game/${game.game_id}`}
-      className="group mx-auto h-full w-full text-gray-300 sm:mx-0"
+      className="group mx-auto h-full w-full text-gray-300 sm:mx-0  "
     >
       <div className="flex h-full w-full flex-col overflow-hidden rounded-3xl rounded-b-none ">
         <img

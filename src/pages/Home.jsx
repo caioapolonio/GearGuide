@@ -8,11 +8,16 @@ import { Button } from "@mantine/core";
 import GridContainer from "../components/GridContainer";
 import Footer from "../components/Footer";
 import PageLayout from "../components/PageLayout";
-const Home = ({ session, setSession }) => {
+import { useAuth } from "../hooks/AuthContext";
+import { set } from "react-hook-form";
+const Home = () => {
+  const { session } = useAuth();
+
   const [games, setGames] = useState([]);
   const [players, setPlayers] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  async function fetchGamesData() {
+  const fetchGamesData = async () => {
     try {
       const { data, error } = await supabase.from("games").select("*");
       if (error) {
@@ -23,10 +28,11 @@ const Home = ({ session, setSession }) => {
     } catch (error) {
       console.error("Erro ao recuperar dados:", error.message);
     }
-  }
+  };
 
-  async function fetchPlayersData() {
+  const fetchPlayersData = async () => {
     try {
+      setLoading(true);
       const { data, error } = await supabase
         .from("players")
         .select(
@@ -40,30 +46,45 @@ const Home = ({ session, setSession }) => {
         )
         .order("created_at", { ascending: false })
         .limit(5);
+
       if (error) {
+        setLoading(false);
         throw error;
       }
       console.log("fetchPlayersData", data);
       setPlayers(data);
+      setLoading(false);
     } catch (error) {
       console.error("Erro ao recuperar dados:", error.message);
     }
-  }
+  };
 
   useEffect(() => {
     fetchGamesData();
     fetchPlayersData();
   }, []);
+
   return (
     <PageLayout>
-      <Navbar session={session} setSession={setSession} />
+      <Navbar session={session} />
       <Container>
         <section className="pb-10">
           <h2 className="text-3xl font-bold">Games</h2>
           <GridContainer>
-            {games.map((game) => (
-              <GameCard key={game.game_id} game={game} />
-            ))}
+            {loading
+              ? Array(5)
+                  .fill()
+                  .map((_, index) => (
+                    <div
+                      className="shimmer mx-auto h-full w-full rounded-3xl sm:mx-0 "
+                      key={index}
+                    >
+                      oi
+                    </div>
+                  ))
+              : games.map((game) => (
+                  <GameCard key={game.game_id} game={game} />
+                ))}
           </GridContainer>
         </section>
         <section className="pb-10">
