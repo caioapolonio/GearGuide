@@ -128,7 +128,7 @@ const GamePage = ({ session, setSession }) => {
 
   return (
     <PageLayout>
-      <Navbar session={session} setSession={setSession} />
+      <Navbar />
       <Container>
         <div className="mb-10 flex flex-col gap-6 border-b-2 border-neutral-500 pb-10 sm:flex-row">
           <div className="h-[360px] w-[320px] overflow-hidden rounded-3xl">

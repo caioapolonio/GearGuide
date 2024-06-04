@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { supabase } from "../db/supabaseClient";
 import { Button, Modal } from "@mantine/core";
+import { useNavigate } from "react-router-dom";
 
 const SignUpBtn = () => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -12,6 +13,8 @@ const SignUpBtn = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
+
+  let navigate = useNavigate();
 
   const onSubmit = async (e) => {
     const { email, username, password } = e;
@@ -66,6 +69,7 @@ const SignUpBtn = () => {
       }
       console.log("EVENT", e);
       console.log("DATA", data);
+      navigate("/");
     }
   };
   return (

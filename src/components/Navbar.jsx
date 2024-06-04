@@ -6,12 +6,14 @@ import SignUpBtn from "./SignUpBtn";
 import { useEffect, useState } from "react";
 import { Modal, Menu } from "@mantine/core";
 import { set } from "react-hook-form";
+import { useAuth } from "../hooks/AuthContext";
 
-const Navbar = ({ session, setSession }) => {
+const Navbar = () => {
   const [openFollowing, setOpenFollowing] = useState(false);
   const [following, setFollowing] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState({});
+  const { session } = useAuth();
   let navigate = useNavigate();
 
   useEffect(() => {
@@ -19,7 +21,7 @@ const Navbar = ({ session, setSession }) => {
       handleUser();
       console.log("user logged in");
     }
-  }, [session]);
+  }, []);
 
   async function handleFollowing() {
     try {
@@ -108,11 +110,12 @@ const Navbar = ({ session, setSession }) => {
                 <Menu.Dropdown>
                   {user.role === "admin" && (
                     <>
-                      <Menu.Item leftSection={<BarChart4 />}>
-                        <Link to="/dashboard/games" className="text-md">
+                      <Link to="/dashboard/games" className="text-md">
+                        <Menu.Item leftSection={<BarChart4 />}>
                           Dashboard
-                        </Link>
-                      </Menu.Item>
+                        </Menu.Item>
+                      </Link>
+
                       <Menu.Divider />
                     </>
                   )}
@@ -128,7 +131,7 @@ const Navbar = ({ session, setSession }) => {
             </div>
           ) : (
             <div className=" flex items-center justify-center gap-3">
-              <LoginBtn session={session} setSession={setSession} />
+              <LoginBtn />
               <SignUpBtn />
             </div>
           )}
@@ -143,7 +146,7 @@ const Navbar = ({ session, setSession }) => {
           <div className="mt-4 flex basis-full flex-col items-center gap-6 border-t-2 border-neutral-500 pt-8 transition-all md:hidden">
             {!session ? (
               <>
-                <LoginBtn session={session} setSession={setSession} />
+                <LoginBtn />
                 <SignUpBtn />
               </>
             ) : (
@@ -160,6 +163,11 @@ const Navbar = ({ session, setSession }) => {
           title="Following"
         >
           <div className="flex flex-col gap-4">
+            {following.length === 0 && (
+              <span className="text-white">
+                You are not following anyone yet
+              </span>
+            )}
             {following.map((player) => {
               return (
                 <div

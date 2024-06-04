@@ -8,12 +8,14 @@ import Container from "../components/Container";
 import Footer from "../components/Footer";
 import PageLayout from "../components/PageLayout";
 import GridContainer from "../components/GridContainer";
+import { useAuth } from "../hooks/AuthContext";
 
-const PlayerPage = ({ session, setSession }) => {
+const PlayerPage = () => {
   const { playerID } = useParams();
   const [player, setPlayer] = useState({});
   const [gears, setGears] = useState({});
   const [follow, setFollow] = useState(false);
+  const { session } = useAuth();
 
   useEffect(() => {
     fetchPlayer();
@@ -22,7 +24,7 @@ const PlayerPage = ({ session, setSession }) => {
     if (session) {
       checkFollow();
     }
-  }, [session]);
+  }, []);
 
   async function fetchPlayer() {
     try {
@@ -143,7 +145,7 @@ const PlayerPage = ({ session, setSession }) => {
 
   return (
     <PageLayout>
-      <Navbar session={session} setSession={setSession} />
+      <Navbar />
       <Container>
         <div className="flex flex-col gap-6 rounded-3xl bg-[#373644] p-6 sm:flex-row">
           <img

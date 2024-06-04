@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "../db/supabaseClient";
 import { Button, Modal } from "@mantine/core";
 
-const LoginBtn = ({ session, setSession }) => {
+const LoginBtn = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [openLogin, setOpenLogin] = useState(false);
 
@@ -14,8 +14,6 @@ const LoginBtn = ({ session, setSession }) => {
     handleSubmit,
     formState: { errors },
   } = useForm();
-
-  let navigate = useNavigate();
 
   const onSubmit = async (e) => {
     const { email, password } = e;
@@ -28,7 +26,7 @@ const LoginBtn = ({ session, setSession }) => {
       setErrorMessage(error.message);
     } else {
       console.log("DATA", data);
-      setSession(data);
+
       console.log("EVENTO", e);
     }
   };
