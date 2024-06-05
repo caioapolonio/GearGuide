@@ -21,7 +21,7 @@ const Navbar = () => {
       handleUser();
       console.log("user logged in");
     }
-  }, []);
+  }, [session]);
 
   async function handleFollowing() {
     try {

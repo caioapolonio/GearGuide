@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "../../db/supabaseClient";
 import { useForm } from "react-hook-form";
 import { useDisclosure } from "@mantine/hooks";
-import { Modal, Button, Flex, TextInput, Table } from "@mantine/core";
+import { Modal, Button, Flex, TextInput, Table, Loader } from "@mantine/core";
 import Dashboard from "../../components/Dashboard";
 import GameRow from "../../components/GameRow";
 
@@ -10,11 +10,8 @@ const Games = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [gamesData, setGamesData] = useState([]);
-
-  const handleInputChange = () => {
-    setSuccessMessage("");
-    setErrorMessage("");
-  };
+  const [loading, setLoading] = useState(false);
+  const [opened, { open, close }] = useDisclosure(false);
 
   const {
     register,
@@ -23,43 +20,60 @@ const Games = () => {
     reset,
   } = useForm();
 
-  const onSubmit = async (e) => {
-    const { name, image_url } = e;
-    const { data, error } = await supabase
-      .from("games")
-      .insert({ name: name, image_url: image_url })
-      .select();
-    if (error) {
-      console.log("ERROR", error);
-      setErrorMessage(error.message);
-      return;
-    } else {
-      setSuccessMessage("Game added successfully!");
-      reset();
-      fetchGamesData();
-      console.log("EVENT", e);
-      console.log("DATA", data);
-    }
-  };
-
-  async function fetchGamesData() {
-    try {
-      const { data, error } = await supabase.from("games").select("*");
-      if (error) {
-        throw error;
-      }
-      console.log(data);
-      setGamesData(data);
-    } catch (error) {
-      console.error("Erro ao recuperar dados:", error.message);
-    }
-  }
-
   useEffect(() => {
     fetchGamesData();
   }, []);
 
-  const [opened, { open, close }] = useDisclosure(false);
+  const handleInputChange = () => {
+    setSuccessMessage("");
+    setErrorMessage("");
+  };
+
+  const onSubmit = async (e) => {
+    const { name, image_url } = e;
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from("games")
+        .insert({ name: name, image_url: image_url })
+        .select();
+
+      if (error) {
+        setLoading(false);
+        console.log("ERROR", error);
+        setErrorMessage(error.message);
+        return;
+      } else {
+        fetchGamesData();
+        reset();
+        setLoading(false);
+        console.log("EVENT", e);
+        console.log("DATA", data);
+        setSuccessMessage("Game added successfully!");
+      }
+    } catch (err) {
+      console.error("Unexpected Error", err);
+      setErrorMessage("An unexpected error occurred. Please try again.");
+      setLoading(false);
+    }
+  };
+
+  const fetchGamesData = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("games")
+        .select("*")
+        .order("game_id", { ascending: false });
+
+      if (error) {
+        throw error;
+      }
+      console.log("Games Data:", data);
+      setGamesData(data);
+    } catch (error) {
+      console.error("Erro ao recuperar dados:", error.message);
+    }
+  };
 
   return (
     <Dashboard>
@@ -98,7 +112,7 @@ const Games = () => {
 
           <Flex justify="center" align="center">
             <Button fullWidth type="submit" mt="sm" color="grape">
-              Add Game
+              {loading ? <Loader color="white" size={22} /> : "Add Game"}
             </Button>
           </Flex>
           <Flex>
@@ -114,10 +128,11 @@ const Games = () => {
         <Button onClick={open}>Add Game</Button>
       </Flex>
 
-      <Table withTableBorder layout="fixed">
+      <Table layout="fixed" withTableBorder>
         <Table.Thead>
           <Table.Tr>
             <Table.Th>Name</Table.Th>
+            <Table.Th>Image</Table.Th>
             <Table.Th></Table.Th>
             <Table.Th></Table.Th>
           </Table.Tr>

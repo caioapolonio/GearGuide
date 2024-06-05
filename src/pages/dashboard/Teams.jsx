@@ -2,15 +2,14 @@ import { useState, useEffect } from "react";
 import { supabase } from "../../db/supabaseClient";
 import { useForm } from "react-hook-form";
 import { useDisclosure } from "@mantine/hooks";
-import { Modal, Button, Flex, TextInput } from "@mantine/core";
-import { Table } from "@radix-ui/themes";
+import { Modal, Button, Flex, TextInput, Table } from "@mantine/core";
 import Dashboard from "../../components/Dashboard";
-import HeadsetRow from "../../components/HeadsetRow";
+import TeamRow from "../../components/TeamRow";
 
-const Headsets = () => {
+const Teams = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const [headsetsData, setHeadsetsData] = useState([]);
+  const [teamsData, setTeamsData] = useState([]);
 
   const handleInputChange = () => {
     setSuccessMessage("");
@@ -27,7 +26,7 @@ const Headsets = () => {
   const onSubmit = async (e) => {
     const { name, image_url } = e;
     const { data, error } = await supabase
-      .from("headsets")
+      .from("teams")
       .insert({ name: name, image_url: image_url })
       .select();
     if (error) {
@@ -35,40 +34,39 @@ const Headsets = () => {
       setErrorMessage(error.message);
       return;
     } else {
-      setSuccessMessage("Headset added successfully!");
+      setSuccessMessage("Team added successfully!");
       reset();
-      fetchHeadsetsData();
+      fetchTeamsData();
       console.log("EVENT", e);
       console.log("DATA", data);
     }
   };
 
-  async function fetchHeadsetsData() {
+  async function fetchTeamsData() {
     try {
       const { data, error } = await supabase
-        .from("headsets")
+        .from("teams")
         .select("*")
-        .order("headset_id", { ascending: false });
-
+        .order("team_id", { ascending: false });
       if (error) {
         throw error;
       }
       console.log(data);
-      setHeadsetsData(data);
+      setTeamsData(data);
     } catch (error) {
       console.error("Erro ao recuperar dados:", error.message);
     }
   }
 
   useEffect(() => {
-    fetchHeadsetsData();
+    fetchTeamsData();
   }, []);
 
   const [opened, { open, close }] = useDisclosure(false);
 
   return (
     <Dashboard>
-      <Modal opened={opened} onClose={close} title="Add Headset" centered>
+      <Modal opened={opened} onClose={close} title="Add Team" centered>
         <form onSubmit={handleSubmit(onSubmit)} onChange={handleInputChange}>
           <TextInput
             label="Name"
@@ -103,7 +101,7 @@ const Headsets = () => {
 
           <Flex justify="center" align="center">
             <Button fullWidth type="submit" mt="sm" color="grape">
-              Add Headset
+              Add Team
             </Button>
           </Flex>
           <Flex>
@@ -116,35 +114,35 @@ const Headsets = () => {
       </Modal>
 
       <Flex justify="end" pb="md">
-        <Button onClick={open}>Add Headset</Button>
+        <Button onClick={open}>Add Team</Button>
       </Flex>
 
-      <Table.Root variant="surface" size={3} layout={"fixed"}>
-        <Table.Header>
-          <Table.Row>
-            <Table.ColumnHeaderCell>Name</Table.ColumnHeaderCell>
-            <Table.ColumnHeaderCell>Image</Table.ColumnHeaderCell>
-            <Table.ColumnHeaderCell></Table.ColumnHeaderCell>
-            <Table.ColumnHeaderCell></Table.ColumnHeaderCell>
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          {headsetsData.map((headset) => (
-            <HeadsetRow
-              key={headset.headset_id}
-              headset={headset}
+      <Table withTableBorder layout="fixed">
+        <Table.Thead>
+          <Table.Tr>
+            <Table.Th>Name</Table.Th>
+            <Table.Th>Image</Table.Th>
+            <Table.Th></Table.Th>
+            <Table.Th></Table.Th>
+          </Table.Tr>
+        </Table.Thead>
+        <Table.Tbody>
+          {teamsData.map((team) => (
+            <TeamRow
+              key={team.team_id}
+              team={team}
               errorMessage={errorMessage}
               setErrorMessage={setErrorMessage}
               successMessage={successMessage}
               setSuccessMessage={setSuccessMessage}
-              fetchHeadsetsData={fetchHeadsetsData}
+              fetchTeamsData={fetchTeamsData}
               handleInputChange={handleInputChange}
             />
           ))}
-        </Table.Body>
-      </Table.Root>
+        </Table.Tbody>
+      </Table>
     </Dashboard>
   );
 };
 
-export default Headsets;
+export default Teams;

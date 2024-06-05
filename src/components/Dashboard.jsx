@@ -23,6 +23,7 @@ const Dashboard = ({ children }) => {
           >
             Games
           </Link>
+
           <Link
             to="/dashboard/players"
             className={
@@ -33,46 +34,18 @@ const Dashboard = ({ children }) => {
           >
             Players
           </Link>
+
           <Link
-            to="/dashboard/earphones"
+            to="/dashboard/teams"
             className={
-              location.pathname === "/dashboard/earphones"
+              location.pathname === "/dashboard/teams"
                 ? activelink
                 : inactiveLink
             }
           >
-            Earphones
+            Teams
           </Link>
-          <Link
-            to="/dashboard/headsets"
-            className={
-              location.pathname === "/dashboard/headsets"
-                ? activelink
-                : inactiveLink
-            }
-          >
-            Headsets
-          </Link>
-          <Link
-            to="/dashboard/mice"
-            className={
-              location.pathname === "/dashboard/mice"
-                ? activelink
-                : inactiveLink
-            }
-          >
-            Mice
-          </Link>
-          <Link
-            to="/dashboard/mousepads"
-            className={
-              location.pathname === "/dashboard/mousepads"
-                ? activelink
-                : inactiveLink
-            }
-          >
-            Mousepads
-          </Link>
+
           <Link
             to="/dashboard/monitors"
             className={
@@ -83,6 +56,18 @@ const Dashboard = ({ children }) => {
           >
             Monitors
           </Link>
+
+          <Link
+            to="/dashboard/mice"
+            className={
+              location.pathname === "/dashboard/mice"
+                ? activelink
+                : inactiveLink
+            }
+          >
+            Mice
+          </Link>
+
           <Link
             to="/dashboard/keyboards"
             className={
@@ -92,6 +77,39 @@ const Dashboard = ({ children }) => {
             }
           >
             Keyboards
+          </Link>
+
+          <Link
+            to="/dashboard/headsets"
+            className={
+              location.pathname === "/dashboard/headsets"
+                ? activelink
+                : inactiveLink
+            }
+          >
+            Headsets
+          </Link>
+
+          <Link
+            to="/dashboard/mousepads"
+            className={
+              location.pathname === "/dashboard/mousepads"
+                ? activelink
+                : inactiveLink
+            }
+          >
+            Mousepads
+          </Link>
+
+          <Link
+            to="/dashboard/earphones"
+            className={
+              location.pathname === "/dashboard/earphones"
+                ? activelink
+                : inactiveLink
+            }
+          >
+            Earphones
           </Link>
         </nav>
       </aside>

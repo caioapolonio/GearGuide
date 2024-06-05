@@ -1,10 +1,8 @@
-import { Select, Table } from "@radix-ui/themes";
-import * as Dialog from "@radix-ui/react-dialog";
+import { Table } from "@radix-ui/themes";
 import Dashboard from "../../components/Dashboard";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { supabase } from "../../db/supabaseClient";
-import { CircleXIcon } from "lucide-react";
 import PlayerRow from "../../components/PlayerRow";
 import {
   MultiSelect,
@@ -14,8 +12,10 @@ import {
   Flex,
   NativeSelect,
   ScrollArea,
+  Loader,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import { DateInput } from "@mantine/dates";
 
 const Players = () => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -27,11 +27,11 @@ const Players = () => {
   const [headsets, setHeadsets] = useState([]);
   const [mousepads, setMousepads] = useState([]);
   const [earphones, setEarphones] = useState([]);
+  const [teams, setTeams] = useState([]);
   const [games, setGames] = useState([]);
-
-  const handleInputChange = () => {
-    setSuccessMessage("");
-  };
+  const [countries, setCountries] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [opened, { open, close }] = useDisclosure(false);
 
   const {
     register,
@@ -46,11 +46,33 @@ const Players = () => {
     },
   });
 
+  useEffect(() => {
+    fetchPlayersData();
+    fetchData("monitors", setMonitors, "monitor");
+    fetchData("mice", setMice, "mouse");
+    fetchData("keyboards", setKeyboards, "keyboard");
+    fetchData("headsets", setHeadsets, "headset");
+    fetchData("mousepads", setMousepads, "mousepad");
+    fetchData("earphones", setEarphones, "earphone");
+    fetchData("teams", setTeams, "team");
+    fetchData("countries", setCountries, "country");
+    fetchGamesData();
+  }, []);
+
+  const handleInputChange = () => {
+    setSuccessMessage("");
+    setErrorMessage("");
+  };
+
   const onSubmit = async (e) => {
     const {
       game_id,
       name,
+      fullname,
+      birthday,
       image_url,
+      team_id,
+      country_id,
       monitor_id,
       mouse_id,
       keyboard_id,
@@ -58,12 +80,17 @@ const Players = () => {
       mousepad_id,
       earphone_id,
     } = e;
+    setLoading(true);
     console.log("first submit", e);
     const { data: player, error: player_error } = await supabase
       .from("players")
       .insert({
         name: name,
+        fullname: fullname,
+        birthday: birthday,
         image_url: image_url,
+        team: team_id,
+        country: country_id,
         monitor: monitor_id,
         mouse: mouse_id,
         keyboard: keyboard_id,
@@ -76,12 +103,14 @@ const Players = () => {
     if (player_error) {
       console.log("ERROR", player_error);
       setErrorMessage(player_error.message);
+      setLoading(false);
     } else {
       setSuccessMessage("Player added successfully!");
       reset();
       fetchPlayersData();
       console.log("PLAYER EVENT", e);
       console.log("PLAYER DATA", player);
+      setLoading(false);
     }
     const promises = game_id.map((game) => {
       return supabase
@@ -107,44 +136,52 @@ const Players = () => {
     }
   };
 
-  async function fetchPlayersData() {
+  const fetchPlayersData = async () => {
     try {
-      const { data, error } = await supabase.from("players").select("*");
+      const { data, error } = await supabase
+        .from("players")
+        .select("*")
+        .order("player_id", { ascending: false });
+
       if (error) {
         throw error;
       }
-      console.log(data);
+      console.log("players", data);
       setPlayersData(data);
     } catch (error) {
       console.error("Erro ao recuperar dados:", error.message);
     }
-  }
+  };
 
-  async function fetchGearsData(table, setGear, gearType) {
+  const fetchData = async (table, set, name) => {
     try {
-      const { data, error } = await supabase.from(table).select("*");
+      const { data, error } = await supabase
+        .from(table)
+        .select("*")
+        .order("name", { ascending: true });
+
       if (error) {
         throw error;
       }
-      console.log(data);
-      setGear(
-        data.map((gear) => ({
-          label: gear.name,
-          value: gear[gearType + "_id"],
+      console.log(table, data);
+      set(
+        data.map((data) => ({
+          label: data.name,
+          value: data[name + "_id"],
         })),
       );
     } catch (error) {
       console.error("Erro ao recuperar dados:", error.message);
     }
-  }
+  };
 
-  async function fetchGamesData() {
+  const fetchGamesData = async () => {
     try {
       const { data, error } = await supabase.from("games").select("*");
       if (error) {
         throw error;
       }
-      console.log(data);
+      console.log("games data", data);
       setGames(
         data.map((game) => ({
           label: game.name,
@@ -154,20 +191,7 @@ const Players = () => {
     } catch (error) {
       console.error("Erro ao recuperar dados:", error.message);
     }
-  }
-
-  useEffect(() => {
-    fetchPlayersData();
-    fetchGearsData("monitors", setMonitors, "monitor");
-    fetchGearsData("mice", setMice, "mouse");
-    fetchGearsData("keyboards", setKeyboards, "keyboard");
-    fetchGearsData("headsets", setHeadsets, "headset");
-    fetchGearsData("mousepads", setMousepads, "mousepad");
-    fetchGearsData("earphones", setEarphones, "earphone");
-    fetchGamesData();
-  }, []);
-
-  const [opened, { open, close }] = useDisclosure(false);
+  };
 
   return (
     <Dashboard>
@@ -191,6 +215,7 @@ const Players = () => {
               console.log("game_id", i);
             }}
           />
+
           <TextInput
             label="Name"
             placeholder="Name"
@@ -207,9 +232,41 @@ const Players = () => {
           {errors.name && (
             <p className="text-sm text-red-600">{errors.name.message}</p>
           )}
+
+          <TextInput
+            label="Full Name"
+            placeholder="Full Name"
+            mt="sm"
+            {...register("fullname", {
+              required: {
+                value: true,
+                message: "Preencha o campo de nome completo",
+              },
+              validate: (value) => value.trim() !== "" || "Campo obrigatório",
+            })}
+            onChange={handleInputChange}
+          />
+          {errors.fullname && (
+            <p className="text-sm text-red-600">{errors.fullname.message}</p>
+          )}
+
+          <DateInput
+            mt="sm"
+            label="Birthday"
+            placeholder="YYYY/MM/DD"
+            {...register("birthday")}
+            onChange={(i) => {
+              setValue("birthday", i);
+              console.log("birthday", i);
+            }}
+          />
+          {errors.birthday && (
+            <p className="text-sm text-red-600">{errors.birthday.message}</p>
+          )}
+
           <TextInput
             label="Image"
-            placeholder="Image url"
+            placeholder="Image URL"
             mt="sm"
             {...register("image_url", {
               required: {
@@ -223,36 +280,56 @@ const Players = () => {
           {errors.image_url && (
             <p className="text-sm text-red-600">{errors.image_url.message}</p>
           )}
+
+          <NativeSelect
+            label="Team"
+            mt="sm"
+            data={teams}
+            {...register("team_id")}
+          />
+
+          <NativeSelect
+            label="Countries"
+            mt="sm"
+            data={countries}
+            {...register("country_id")}
+          />
+
           <NativeSelect
             label="Monitor"
             mt="sm"
             data={monitors}
             {...register("monitor_id")}
           />
+
           <NativeSelect
             label="Mouse"
             mt="sm"
             data={mice}
             {...register("mouse_id")}
           />
+
           <NativeSelect
             label="Keyboard"
             mt="sm"
             data={keyboards}
             {...register("keyboard_id")}
           />
+
           <NativeSelect
             label="Headset"
             mt="sm"
             data={headsets}
             {...register("headset_id")}
           />
+
           <NativeSelect
             label="Mousepad"
             mt="sm"
             data={mousepads}
             {...register("mousepad_id")}
           />
+
           <NativeSelect
             label="Earphone"
             mt="sm"
@@ -262,9 +339,10 @@ const Players = () => {
 
           <Flex justify="center" align="center">
             <Button fullWidth type="submit" mt="sm" color="grape">
-              Add player
+              {loading ? <Loader color="white" size={23} /> : "Add Player"}
             </Button>
           </Flex>
+
           <Flex>
             {errorMessage && <div className="text-red-600">{errorMessage}</div>}
             {successMessage && (
@@ -306,6 +384,8 @@ const Players = () => {
               headsets={headsets}
               mousepads={mousepads}
               earphones={earphones}
+              countries={countries}
+              teams={teams}
             />
           ))}
         </Table.Body>

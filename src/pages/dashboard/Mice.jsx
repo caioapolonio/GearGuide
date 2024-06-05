@@ -45,7 +45,11 @@ const Mice = () => {
 
   async function fetchMiceData() {
     try {
-      const { data, error } = await supabase.from("mice").select("*");
+      const { data, error } = await supabase
+        .from("mice")
+        .select("*")
+        .order("mouse_id", { ascending: false });
+
       if (error) {
         throw error;
       }

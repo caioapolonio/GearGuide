@@ -2,6 +2,7 @@ import { Navigate } from "react-router-dom";
 import { useAuth } from "../hooks/AuthContext";
 import { useEffect, useState } from "react";
 import { supabase } from "../db/supabaseClient";
+import { Loader } from "@mantine/core";
 
 const ProtectedRouteAdmin = ({ children }) => {
   const { user } = useAuth();
@@ -35,7 +36,12 @@ const ProtectedRouteAdmin = ({ children }) => {
   };
 
   if (loading) {
-    return <div>Loading...</div>; // Show a loading state while fetching data
+    return (
+      <div className="flex h-screen flex-col items-center justify-center gap-5">
+        <Loader size={80} />
+        Loading...
+      </div>
+    ); // Show a loading state while fetching data
   }
 
   if (!user || role !== "admin") {

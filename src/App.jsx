@@ -10,12 +10,12 @@ import Headsets from "./pages/dashboard/Headsets";
 import Mousepads from "./pages/dashboard/Mousepads";
 import Monitors from "./pages/dashboard/Monitors";
 import Mice from "./pages/dashboard/Mice";
-import "@mantine/core/styles.css";
 import { MantineProvider } from "@mantine/core";
 import GamePage from "./pages/GamePage";
 import PlayerPage from "./pages/PlayerPage";
 import ProtectedRouteAdmin from "./components/ProtectedRouteAdmin";
 import { AuthProvider } from "./hooks/AuthContext";
+import Teams from "./pages/dashboard/Teams";
 const App = () => {
   return (
     <MantineProvider defaultColorScheme="dark">
@@ -85,6 +85,14 @@ const App = () => {
             element={
               <ProtectedRouteAdmin>
                 <Keyboards />
+              </ProtectedRouteAdmin>
+            }
+          />
+          <Route
+            path={"/dashboard/teams"}
+            element={
+              <ProtectedRouteAdmin>
+                <Teams />
               </ProtectedRouteAdmin>
             }
           />

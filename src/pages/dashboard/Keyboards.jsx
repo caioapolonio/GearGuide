@@ -45,7 +45,11 @@ const Keyboards = () => {
 
   async function fetchKeyboardsData() {
     try {
-      const { data, error } = await supabase.from("keyboards").select("*");
+      const { data, error } = await supabase
+        .from("keyboards")
+        .select("*")
+        .order("keyboard_id", { ascending: false });
+
       if (error) {
         throw error;
       }

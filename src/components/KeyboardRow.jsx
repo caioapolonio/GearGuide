@@ -60,7 +60,9 @@ const KeyboardRow = ({
     <>
       <Table.Row align={"center"}>
         <Table.RowHeaderCell>{keyboard.name}</Table.RowHeaderCell>
-        <Table.Cell>{keyboard.image_url}</Table.Cell>
+        <Table.Cell>
+          <img src={keyboard.image_url} alt="" className="h-16 w-16" />
+        </Table.Cell>
         <Table.Cell>
           <Button variant="outline" onClick={open}>
             Edit

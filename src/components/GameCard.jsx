@@ -2,23 +2,23 @@ import { Link } from "react-router-dom";
 
 const GameCard = ({ game }) => {
   return (
-    <div className=" transform rounded-lg border bg-white shadow-md transition duration-500 hover:scale-105 dark:border-gray-700 dark:bg-gray-800">
+    <div className=" transform rounded-lg bg-[#373644] shadow-md transition-all duration-500 hover:scale-105  hover:bg-[#4a4a5e]">
       <div className="flex justify-center p-2">
-        <img
-          className="h-48 w-full rounded-md object-cover "
-          src={game.image_url}
-          loading="lazy"
-        />
+        <Link to={`/game/${game.game_id}`} className="w-full">
+          <img
+            className="h-48 w-full rounded-md object-cover "
+            src={game.image_url}
+            loading="lazy"
+          />
+        </Link>
       </div>
 
-      <div className="px-4 pb-3">
-        <div>
-          <a href="#">
-            <h5 className="text-xl font-semibold tracking-tight text-gray-900 hover:text-violet-800 dark:text-white dark:hover:text-violet-300 ">
-              {game.name}
-            </h5>
-          </a>
-        </div>
+      <div className="w-fit pb-3 pl-2">
+        <Link to={`/game/${game.game_id}`}>
+          <h5 className="text-xl font-semibold tracking-tight text-gray-300  transition-colors duration-300 hover:text-white">
+            {game.name}
+          </h5>
+        </Link>
       </div>
     </div>
   );

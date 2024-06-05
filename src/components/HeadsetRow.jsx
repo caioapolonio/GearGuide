@@ -60,7 +60,9 @@ const HeadsetRow = ({
     <>
       <Table.Row align={"center"}>
         <Table.RowHeaderCell>{headset.name}</Table.RowHeaderCell>
-        <Table.Cell>{headset.image_url}</Table.Cell>
+        <Table.Cell>
+          <img src={headset.image_url} alt="" className="h-16 w-16" />
+        </Table.Cell>
         <Table.Cell>
           <Button variant="outline" onClick={open}>
             Edit

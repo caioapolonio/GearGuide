@@ -11,6 +11,8 @@ import {
 import { useDisclosure } from "@mantine/hooks";
 import { supabase } from "../db/supabaseClient";
 import { useForm } from "react-hook-form";
+import { DateInput } from "@mantine/dates";
+import { Link } from "react-router-dom";
 
 const PlayerRow = ({
   player,
@@ -28,17 +30,19 @@ const PlayerRow = ({
   headsets,
   mousepads,
   earphones,
+  teams,
+  countries,
 }) => {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm();
 
   const [opened, { open, close }] = useDisclosure(false);
-  console.log(monitors);
 
-  const handleDeletePlayer = async (playerId) => {
+  const handleDeletePlayer = async (player_id) => {
     const confirmed = window.confirm(
       "Are you sure you want to delete this player?",
     );
@@ -47,7 +51,7 @@ const PlayerRow = ({
         const { data, error } = await supabase
           .from("players")
           .delete()
-          .eq("player_id", playerId)
+          .eq("player_id", player_id)
           .select();
         if (error) {
           console.error("Error deleting player:", error.message);
@@ -62,11 +66,37 @@ const PlayerRow = ({
   };
 
   const handleUpdatePlayer = async (e) => {
-    const { id, name, image_url } = e;
+    const {
+      player_id,
+      name,
+      image_url,
+      game_id,
+      monitor_id,
+      mouse_id,
+      keyboard_id,
+      headset_id,
+      mousepad_id,
+      earphone_id,
+      team_id,
+      country_id,
+      birthday,
+    } = e;
     const { data, error } = await supabase
       .from("players")
-      .update({ name: name, image_url: image_url })
-      .eq("player_id", id);
+      .update({
+        name: name,
+        image_url: image_url,
+        birthday: birthday,
+        team: team_id,
+        country: country_id,
+        monitor: monitor_id,
+        mouse: mouse_id,
+        keyboard: keyboard_id,
+        headset: headset_id,
+        mousepad: mousepad_id,
+        earphone: earphone_id,
+      })
+      .eq("player_id", player_id);
     if (error) {
       console.log("ERROR", error);
       setErrorMessage(error.message);
@@ -81,8 +111,20 @@ const PlayerRow = ({
   return (
     <>
       <Table.Row align={"center"}>
-        <Table.RowHeaderCell>{player.name}</Table.RowHeaderCell>
-        <Table.Cell>{player.image_url}</Table.Cell>
+        <Table.RowHeaderCell>
+          <Link
+            to={`/player/${player.player_id}`}
+            className=" font-medium hover:underline "
+          >
+            {player.name}
+          </Link>
+        </Table.RowHeaderCell>
+        <Table.Cell>
+          <img
+            src={player.image_url}
+            className="h-16 w-16 rounded-full border-2 border-zinc-300"
+          />
+        </Table.Cell>
         <Table.Cell>
           <Button variant="outline" onClick={open}>
             Edit
@@ -114,7 +156,7 @@ const PlayerRow = ({
               validate: (value) => value.trim() !== "" || "Campo obrigatório",
             })}
           />
-          <MultiSelect
+          {/* <MultiSelect
             data={games}
             label="Game"
             placeholder="Select game"
@@ -124,7 +166,7 @@ const PlayerRow = ({
             onChange={(i) => {
               setValue("game_id", i);
             }}
-          />
+          /> */}
           <TextInput
             label="Name"
             placeholder="Name"
@@ -141,9 +183,42 @@ const PlayerRow = ({
           {errors.name && (
             <p className="text-sm text-red-600">{errors.name.message}</p>
           )}
+
+          <TextInput
+            label="Full Name"
+            placeholder="Full Name"
+            mt="sm"
+            defaultValue={player.fullname}
+            {...register("fullname", {
+              required: {
+                value: true,
+                message: "Preencha o campo de nome completo",
+              },
+              validate: (value) => value.trim() !== "" || "Campo obrigatório",
+            })}
+          />
+          {errors.fullname && (
+            <p className="text-sm text-red-600">{errors.fullname.message}</p>
+          )}
+
+          <DateInput
+            mt="sm"
+            label="Birthday"
+            placeholder="YYYY/MM/DD"
+            defaultValue={new Date(player.birthday)}
+            {...register("birthday")}
+            onChange={(i) => {
+              setValue("birthday", i);
+              console.log("birthday", i);
+            }}
+          />
+          {errors.birthday && (
+            <p className="text-sm text-red-600">{errors.birthday.message}</p>
+          )}
+
           <TextInput
             label="Image"
-            placeholder="Image url"
+            placeholder="Image URL"
             mt="sm"
             defaultValue={player.image_url}
             {...register("image_url", {
@@ -157,6 +232,23 @@ const PlayerRow = ({
           {errors.image_url && (
             <p className="text-sm text-red-600">{errors.image_url.message}</p>
           )}
+
+          <NativeSelect
+            label="Team"
+            mt="sm"
+            data={teams}
+            defaultValue={player.team}
+            {...register("team_id")}
+          />
+
+          <NativeSelect
+            label="Countries"
+            mt="sm"
+            data={countries}
+            defaultValue={player.country}
+            {...register("country_id")}
+          />
+
           <NativeSelect
             label="Monitor"
             mt="sm"
@@ -164,6 +256,7 @@ const PlayerRow = ({
             defaultValue={player.monitor}
             {...register("monitor_id")}
           />
+
           <NativeSelect
             label="Mouse"
             mt="sm"
@@ -171,6 +264,7 @@ const PlayerRow = ({
             defaultValue={player.mouse}
             {...register("mouse_id")}
           />
+
           <NativeSelect
             label="Keyboard"
             mt="sm"
@@ -178,6 +272,7 @@ const PlayerRow = ({
             defaultValue={player.keyboard}
             {...register("keyboard_id")}
           />
+
           <NativeSelect
             label="Headset"
             mt="sm"
@@ -185,6 +280,7 @@ const PlayerRow = ({
             defaultValue={player.headset}
             {...register("headset_id")}
           />
+
           <NativeSelect
             label="Mousepad"
             mt="sm"
@@ -192,6 +288,7 @@ const PlayerRow = ({
             defaultValue={player.mousepad}
             {...register("mousepad_id")}
           />
+
           <NativeSelect
             label="Earphone"
             mt="sm"

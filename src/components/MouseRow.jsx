@@ -60,7 +60,9 @@ const MouseRow = ({
     <>
       <Table.Row align={"center"}>
         <Table.RowHeaderCell>{mouse.name}</Table.RowHeaderCell>
-        <Table.Cell>{mouse.image_url}</Table.Cell>
+        <Table.Cell>
+          <img src={mouse.image_url} alt="" className="h-16 w-16" />
+        </Table.Cell>
         <Table.Cell>
           <Button variant="outline" onClick={open}>
             Edit

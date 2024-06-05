@@ -61,7 +61,9 @@ const EarphoneRow = ({
     <>
       <Table.Row align={"center"}>
         <Table.RowHeaderCell>{earphone.name}</Table.RowHeaderCell>
-        <Table.Cell>{earphone.image_url}</Table.Cell>
+        <Table.Cell>
+          <img src={earphone.image_url} alt="" className="h-16 w-16" />
+        </Table.Cell>
         <Table.Cell>
           <Button variant="outline" onClick={open}>
             Edit

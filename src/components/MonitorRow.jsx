@@ -60,7 +60,9 @@ const MonitorRow = ({
     <>
       <Table.Row align={"center"}>
         <Table.RowHeaderCell>{monitor.name}</Table.RowHeaderCell>
-        <Table.Cell>{monitor.image_url}</Table.Cell>
+        <Table.Cell>
+          <img src={monitor.image_url} alt="" className="h-16 w-16" />
+        </Table.Cell>
         <Table.Cell>
           <Button variant="outline" onClick={open}>
             Edit

@@ -187,7 +187,9 @@ const PlayerPage = () => {
                   <Table.Tr>
                     <Table.Th>Birthday</Table.Th>
                     <Table.Td>
-                      {new Date(player.birthday).toLocaleDateString("en-US", {
+                      {new Date(
+                        `${player.birthday}T00:00:00`,
+                      ).toLocaleDateString("en-US", {
                         month: "long",
                         day: "numeric",
                         year: "numeric",
@@ -227,7 +229,9 @@ const PlayerPage = () => {
                   <Table.Tr>
                     <Table.Th>Birthday</Table.Th>
                     <Table.Td>
-                      {new Date(player.birthday).toLocaleDateString("en-US", {
+                      {new Date(
+                        `${player.birthday}T00:00:00`,
+                      ).toLocaleDateString("en-US", {
                         month: "long",
                         day: "numeric",
                         year: "numeric",
@@ -274,7 +278,7 @@ const PlayerPage = () => {
               >
                 <div className="flex h-full w-full flex-col items-center gap-8 rounded-3xl bg-[#373644] p-4 transition-colors duration-300 hover:bg-[#4a4a5e]">
                   <img
-                    className="h-36 w-36 rounded-full object-cover"
+                    className="h-36 w-36 object-cover "
                     src={gear.image_url}
                     alt=""
                   />

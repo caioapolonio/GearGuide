@@ -45,7 +45,11 @@ const Earphones = () => {
 
   async function fetchEarphonesData() {
     try {
-      const { data, error } = await supabase.from("earphones").select("*");
+      const { data, error } = await supabase
+        .from("earphones")
+        .select("*")
+        .order("earphone_id", { ascending: false });
+
       if (error) {
         throw error;
       }

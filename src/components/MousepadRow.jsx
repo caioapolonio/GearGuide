@@ -60,7 +60,9 @@ const MousepadRow = ({
     <>
       <Table.Row align={"center"}>
         <Table.RowHeaderCell>{mousepad.name}</Table.RowHeaderCell>
-        <Table.Cell>{mousepad.image_url}</Table.Cell>
+        <Table.Cell>
+          <img src={mousepad.image_url} alt="" className="h-16 w-16" />
+        </Table.Cell>
         <Table.Cell>
           <Button variant="outline" onClick={open}>
             Edit

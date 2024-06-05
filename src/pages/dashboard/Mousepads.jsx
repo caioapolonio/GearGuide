@@ -45,7 +45,11 @@ const Mousepads = () => {
 
   async function fetchMousepadsData() {
     try {
-      const { data, error } = await supabase.from("mousepads").select("*");
+      const { data, error } = await supabase
+        .from("mousepads")
+        .select("*")
+        .order("mousepad_id", { ascending: false });
+
       if (error) {
         throw error;
       }

@@ -3,11 +3,13 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../db/supabaseClient";
-import { Button, Modal } from "@mantine/core";
+import { Button, Loader, Modal } from "@mantine/core";
 
 const LoginBtn = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [openLogin, setOpenLogin] = useState(false);
+  const [loading, setLoading] = useState(false);
+  let navigate = useNavigate();
 
   const {
     register,
@@ -16,18 +18,26 @@ const LoginBtn = () => {
   } = useForm();
 
   const onSubmit = async (e) => {
-    const { email, password } = e;
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    if (error) {
-      console.log("ERROR", error);
-      setErrorMessage(error.message);
-    } else {
-      console.log("DATA", data);
-
-      console.log("EVENTO", e);
+    try {
+      setLoading(true);
+      const { email, password } = e;
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password,
+      });
+      if (error) {
+        console.error("Error:", error);
+        setErrorMessage(error.message);
+        setLoading(false);
+      } else {
+        console.log("Data:", data);
+        setLoading(false);
+        navigate("/");
+      }
+    } catch (error) {
+      console.error("Unexpected error:", error);
+      setErrorMessage("An unexpected error occurred. Please try again later.");
+      setLoading(false);
     }
   };
 
@@ -95,10 +105,10 @@ const LoginBtn = () => {
             </a>
           </div>
           <button
-            className="rounded-md bg-purple-700 p-2 text-white shadow-xl"
+            className="flex items-center justify-center rounded-md bg-purple-700 p-2 text-white shadow-xl "
             type="submit"
           >
-            Entrar
+            {loading ? <Loader size={24} color="white" /> : "Entrar"}
           </button>
           {errorMessage && <div className="text-red-600">{errorMessage}</div>}
         </form>

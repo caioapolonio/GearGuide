@@ -10,6 +10,9 @@ import Footer from "../components/Footer";
 import PageLayout from "../components/PageLayout";
 import { useAuth } from "../hooks/AuthContext";
 import { set } from "react-hook-form";
+import SkeletonGameCard from "../components/SkeletonGameCard";
+import PlayerCard from "../components/PlayerCard";
+import SkeletonPlayerCard from "../components/SkeletonPlayerCard";
 const Home = () => {
   const { session } = useAuth();
 
@@ -31,8 +34,8 @@ const Home = () => {
   };
 
   const fetchPlayersData = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
       const { data, error } = await supabase
         .from("players")
         .select(
@@ -60,8 +63,8 @@ const Home = () => {
   };
 
   useEffect(() => {
-    fetchGamesData();
     fetchPlayersData();
+    fetchGamesData();
   }, []);
 
   return (
@@ -71,20 +74,11 @@ const Home = () => {
         <section className="pb-10">
           <h2 className="text-3xl font-bold">Games</h2>
           <GridContainer>
-            {loading
-              ? Array(5)
-                  .fill()
-                  .map((_, index) => (
-                    <div
-                      className="shimmer mx-auto h-full w-full rounded-3xl sm:mx-0 "
-                      key={index}
-                    >
-                      oi
-                    </div>
-                  ))
-              : games.map((game) => (
-                  <GameCard key={game.game_id} game={game} />
-                ))}
+            {loading ? (
+              <SkeletonGameCard />
+            ) : (
+              games.map((game) => <GameCard key={game.game_id} game={game} />)
+            )}
           </GridContainer>
         </section>
         <section className="pb-10">
@@ -93,41 +87,13 @@ const Home = () => {
             <Button variant="outline">See more</Button>
           </div>
           <GridContainer>
-            {players.map((player) => {
-              return (
-                <Link
-                  key={player.player_id}
-                  className="group mx-auto h-full w-full text-gray-300 sm:mx-0"
-                  to={`/player/${player.player_id}`}
-                >
-                  <div className="flex h-full w-full flex-col items-center gap-8 rounded-3xl bg-[#373644] p-4 transition-colors duration-300 hover:bg-[#4a4a5e]">
-                    <img
-                      className="h-36 w-36 rounded-full ring-2 ring-white/20"
-                      src={player.image_url}
-                      alt=""
-                    />
-                    <div className="flex flex-col items-center gap-1">
-                      <span className="flex flex-row items-center gap-2 text-lg font-medium transition-colors duration-300 hover:text-white">
-                        {player.name}
-                        <img
-                          className="h-3"
-                          src={player.countries.image_url}
-                          alt=""
-                        />
-                      </span>
-                      <span className="text-md flex flex-row items-center gap-2 font-normal ">
-                        {player.teams.name}
-                        <img
-                          className="h-5"
-                          src={player.teams.image_url}
-                          alt=""
-                        />
-                      </span>
-                    </div>
-                  </div>
-                </Link>
-              );
-            })}
+            {loading ? (
+              <SkeletonPlayerCard />
+            ) : (
+              players.map((player) => (
+                <PlayerCard key={player.player_id} player={player} />
+              ))
+            )}
           </GridContainer>
         </section>
       </Container>

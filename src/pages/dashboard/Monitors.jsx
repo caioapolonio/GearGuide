@@ -45,7 +45,11 @@ const Monitors = () => {
 
   async function fetchMonitorsData() {
     try {
-      const { data, error } = await supabase.from("monitors").select("*");
+      const { data, error } = await supabase
+        .from("monitors")
+        .select("*")
+        .order("monitor_id", { ascending: false });
+
       if (error) {
         throw error;
       }

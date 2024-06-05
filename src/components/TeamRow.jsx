@@ -2,15 +2,14 @@ import { Button, Modal, Flex, TextInput, Table } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { supabase } from "../db/supabaseClient";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
 
-const GameRow = ({
-  game,
+const TeamRow = ({
+  team,
   errorMessage,
   setErrorMessage,
   successMessage,
   setSuccessMessage,
-  fetchGamesData,
+  fetchTeamsData,
   handleInputChange,
 }) => {
   const {
@@ -21,38 +20,40 @@ const GameRow = ({
 
   const [opened, { open, close }] = useDisclosure(false);
 
-  const handleDeleteGame = async (game_id) => {
+  const handleDeleteTeam = async (team_id) => {
     const confirmed = window.confirm(
-      "Are you sure you want to delete this game?",
+      "Are you sure you want to delete this team?",
     );
     if (confirmed) {
       const { data, error } = await supabase
-        .from("games")
+        .from("teams")
         .delete()
-        .eq("game_id", game_id);
+        .eq("team_id", team_id);
       if (error) {
-        console.error("Error deleting game:", error.message);
+        console.error("Error deleting team:", error.message);
       } else {
-        fetchGamesData();
-        console.log("Game deleted successfully:", data);
+        fetchTeamData();
+        console.log("Team deleted successfully:", data);
       }
     }
   };
 
-  const handleUpdateGame = async (e) => {
-    const { game_id, name, image_url } = e;
+  const handleUpdateTeam = async (e) => {
+    const { team_id, name, image_url } = e;
     const { data, error } = await supabase
-      .from("games")
+      .from("teams")
       .update({ name: name, image_url: image_url })
-      .eq("game_id", game_id)
+      .eq("team_id", team_id)
       .select();
+
     if (error) {
       console.log("ERROR", error);
       setErrorMessage(error.message);
       return;
     }
-    setSuccessMessage("Game edited successfully!");
-    fetchGamesData();
+
+    setSuccessMessage("Team edited successfully!");
+    fetchTeamsData();
     console.log("EVENT", e);
     console.log("DATA", data);
   };
@@ -60,20 +61,9 @@ const GameRow = ({
   return (
     <>
       <Table.Tr>
+        <Table.Td>{team.name}</Table.Td>
         <Table.Td>
-          <Link
-            to={`/game/${game.game_id}`}
-            className=" font-medium hover:underline "
-          >
-            {game.name}
-          </Link>
-        </Table.Td>
-        <Table.Td>
-          <img
-            src={game.image_url}
-            alt={game.name}
-            className="h-16 w-16 object-cover"
-          />
+          <img src={team.image_url} alt="" className="h-12 w-12" />
         </Table.Td>
 
         <Table.Td>
@@ -85,23 +75,23 @@ const GameRow = ({
           <Button
             variant="outline"
             color="red"
-            onClick={() => handleDeleteGame(game.game_id)}
+            onClick={() => handleDeleteTeam(team.team_id)}
           >
             Delete
           </Button>
         </Table.Td>
       </Table.Tr>
 
-      <Modal opened={opened} onClose={close} title="Edit Game" centered>
+      <Modal opened={opened} onClose={close} title="Edit Team" centered>
         <form
-          onSubmit={handleSubmit(handleUpdateGame)}
+          onSubmit={handleSubmit(handleUpdateTeam)}
           onChange={handleInputChange}
         >
           <TextInput
             label="ID"
-            defaultValue={game.game_id}
+            defaultValue={team.team_id}
             readOnly
-            {...register("game_id", {
+            {...register("team_id", {
               required: {
                 value: true,
                 message: "Preencha o campo de nome",
@@ -113,7 +103,7 @@ const GameRow = ({
             label="Name"
             placeholder="Name"
             mt="sm"
-            defaultValue={game.name}
+            defaultValue={team.name}
             {...register("name", {
               required: {
                 value: true,
@@ -129,7 +119,7 @@ const GameRow = ({
             label="Image"
             placeholder="Image url"
             mt="sm"
-            defaultValue={game.image_url}
+            defaultValue={team.image_url}
             {...register("image_url", {
               required: {
                 value: true,
@@ -143,7 +133,7 @@ const GameRow = ({
           )}
           <Flex justify="center" align="center">
             <Button fullWidth type="submit" mt="sm">
-              Edit Game
+              Edit Team
             </Button>
           </Flex>
           <Flex>
@@ -158,4 +148,4 @@ const GameRow = ({
   );
 };
 
-export default GameRow;
+export default TeamRow;
